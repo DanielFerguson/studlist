@@ -1,0 +1,73 @@
+<?php
+
+use App\Http\Controllers\SteerListingController;
+use App\Http\Controllers\StudListingController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\WebhookController;
+use App\Models\SteerListing;
+use App\Models\StudListing;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/', function () {
+    return Inertia::render('welcome');
+})->name('home');
+
+// Stripe webhook route (must be outside auth middleware)
+Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
+        $steerListings = SteerListing::where('user_id', auth()->user()->id)
+            ->with(['user.subscriptions' => function ($query) {
+                $query->select('id', 'user_id', 'name', 'stripe_id', 'stripe_status', 'created_at', 'updated_at', 'ends_at');
+            }])
+            ->latest()
+            ->get()
+            ->map(function ($listing) {
+                // Add subscription info to each listing
+                $listing->subscription_info = $listing->laravelSubscription();
+                $listing->type = 'steer';
+
+                return $listing;
+            });
+
+        $studListings = StudListing::where('user_id', auth()->user()->id)
+            ->with(['user.subscriptions' => function ($query) {
+                $query->select('id', 'user_id', 'name', 'stripe_id', 'stripe_status', 'created_at', 'updated_at', 'ends_at');
+            }])
+            ->latest()
+            ->get()
+            ->map(function ($listing) {
+                // Add subscription info to each listing
+                $listing->subscription_info = $listing->laravelSubscription();
+                $listing->type = 'stud';
+
+                return $listing;
+            });
+
+        return Inertia::render('dashboard', [
+            'steerListings' => $steerListings,
+            'studListings' => $studListings,
+        ]);
+    })->name('dashboard');
+
+    Route::resource('steers', SteerListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('studs', StudListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+
+    // Subscription routes
+    Route::prefix('subscriptions')->name('subscription.')->group(function () {
+        Route::match(['get', 'post'], 'checkout/{steer}', [SubscriptionController::class, 'checkout'])->name('checkout');
+        Route::get('success/{steer}', [SubscriptionController::class, 'success'])->name('success');
+        Route::post('cancel/{steer}', [SubscriptionController::class, 'cancel'])->name('cancel');
+
+        Route::match(['get', 'post'], 'checkout-stud/{stud}', [SubscriptionController::class, 'checkoutStud'])->name('checkout-stud');
+        Route::get('success-stud/{stud}', [SubscriptionController::class, 'successStud'])->name('success-stud');
+        Route::post('cancel-stud/{stud}', [SubscriptionController::class, 'cancelStud'])->name('cancel-stud');
+
+        Route::get('billing-portal', [SubscriptionController::class, 'billingPortal'])->name('billing-portal');
+    });
+});
+
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
