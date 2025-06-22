@@ -98,7 +98,6 @@ class GeneticsListingFactory extends Factory
         ]);
     }
 
-
     /**
      * Create a semen straws listing
      */

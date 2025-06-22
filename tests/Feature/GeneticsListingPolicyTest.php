@@ -12,7 +12,7 @@ describe('GeneticsListing Policy', function () {
 
             // Owner can view their own listing
             expect($owner->can('view', $genetics))->toBeTrue();
-            
+
             // Other users can view listings (for public display)
             expect($otherUser->can('view', $genetics))->toBeTrue();
         });

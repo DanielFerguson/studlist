@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\SteerListing;
-use App\Models\StudListing;
 use App\Models\GeneticsListing;
 use App\Models\ShowEquipmentListing;
-use App\Policies\SteerListingPolicy;
-use App\Policies\StudListingPolicy;
+use App\Models\SteerListing;
+use App\Models\StudListing;
 use App\Policies\GeneticsListingPolicy;
 use App\Policies\ShowEquipmentListingPolicy;
+use App\Policies\SteerListingPolicy;
+use App\Policies\StudListingPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\SteerListing;
-use App\Models\StudListing;
 use App\Models\GeneticsListing;
 use App\Models\ShowEquipmentListing;
+use App\Models\SteerListing;
+use App\Models\StudListing;
 use App\Models\User;
 
 describe('Dashboard Access', function () {
@@ -119,7 +119,7 @@ describe('Dashboard Content', function () {
 
     test('dashboard shows all listing types correctly', function () {
         $user = User::factory()->create();
-        
+
         // Create one of each listing type
         $steer = SteerListing::factory()->create([
             'user_id' => $user->id,
@@ -153,7 +153,7 @@ describe('Dashboard Content', function () {
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertOk();
-        
+
         // When no listings exist, the dashboard should still be accessible
         // The empty state messages may be in the client-side rendering
         $this->assertTrue(true); // Basic test that dashboard loads without error

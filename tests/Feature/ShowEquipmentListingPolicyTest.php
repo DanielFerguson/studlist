@@ -12,7 +12,7 @@ describe('ShowEquipmentListing Policy', function () {
 
             // Owner can view their own listing
             expect($owner->can('view', $equipment))->toBeTrue();
-            
+
             // Other users can view listings (for public display)
             expect($otherUser->can('view', $equipment))->toBeTrue();
         });
