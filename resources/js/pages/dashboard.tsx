@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { SteerListing, StudListing, type BreadcrumbItem } from '@/types';
+import { SteerListing, StudListing, GeneticsListing, ShowEquipmentListing, type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Card,
@@ -42,9 +42,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface DashboardProps {
     steerListings: SteerListing[];
     studListings: StudListing[];
+    geneticsListings: GeneticsListing[];
+    showEquipmentListings: ShowEquipmentListing[];
 }
 
-function getStatusBadge(status: SteerListing['status'] | StudListing['status']) {
+function getStatusBadge(status: SteerListing['status'] | StudListing['status'] | GeneticsListing['status']) {
     switch (status) {
         case 'active':
             return <Badge variant="default" className="bg-green-500">Active</Badge>;
@@ -57,11 +59,13 @@ function getStatusBadge(status: SteerListing['status'] | StudListing['status']) 
     }
 }
 
-export default function Dashboard({ steerListings, studListings }: DashboardProps) {
+export default function Dashboard({ steerListings, studListings, geneticsListings, showEquipmentListings }: DashboardProps) {
     const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
 
     const [selectedSteerIdDelete, setSelectedSteerIdDelete] = useState<number | null>(null);
     const [selectedStudIdDelete, setSelectedStudIdDelete] = useState<number | null>(null);
+    const [selectedGeneticsIdDelete, setSelectedGeneticsIdDelete] = useState<number | null>(null);
+    const [selectedShowEquipmentIdDelete, setSelectedShowEquipmentIdDelete] = useState<number | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -100,6 +104,38 @@ export default function Dashboard({ steerListings, studListings }: DashboardProp
             onFinish: () => {
                 // This runs regardless of success or error
                 setSelectedStudIdDelete(null);
+            }
+        });
+    }
+
+    const handleDeleteGenetics = (geneticsId: number) => {
+        router.delete(`/genetics/${geneticsId}`, {
+            onSuccess: () => {
+                setSelectedGeneticsIdDelete(null);
+            },
+            onError: (errors) => {
+                console.error('Delete error:', errors);
+                setSelectedGeneticsIdDelete(null);
+            },
+            onFinish: () => {
+                // This runs regardless of success or error
+                setSelectedGeneticsIdDelete(null);
+            }
+        });
+    }
+
+    const handleDeleteShowEquipment = (showEquipmentId: number) => {
+        router.delete(`/show-equipment/${showEquipmentId}`, {
+            onSuccess: () => {
+                setSelectedShowEquipmentIdDelete(null);
+            },
+            onError: (errors) => {
+                console.error('Delete error:', errors);
+                setSelectedShowEquipmentIdDelete(null);
+            },
+            onFinish: () => {
+                // This runs regardless of success or error
+                setSelectedShowEquipmentIdDelete(null);
             }
         });
     }
@@ -316,6 +352,154 @@ export default function Dashboard({ steerListings, studListings }: DashboardProp
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Genetics Listings table */}
+                <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70">
+                    <Card className="shadow-none border-none">
+                        <CardHeader>
+                            <CardTitle>Genetics</CardTitle>
+                            <CardDescription>
+                                These are your genetics listings. Genetics listings are free to post.
+                            </CardDescription>
+                            <CardAction className="flex gap-2">
+                                <Link href={route('genetics.create')}>
+                                    <Button size="sm">
+                                        <PlusIcon />
+                                        List Genetics
+                                    </Button>
+                                </Link>
+                            </CardAction>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Price</TableHead>
+                                        <TableHead>Location</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {geneticsListings.map((item) => (
+                                        <TableRow key={item.id}>
+                                            <TableCell className="font-medium">
+                                                <Link href={route('genetics.edit', item.id)} className='hover:underline'>
+                                                    {item.name}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.type}
+                                            </TableCell>
+                                            <TableCell>
+                                                ${item.price.toLocaleString()}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.storage_location}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2 flex-wrap">
+                                                    <Link href={route('genetics.edit', item.id)}>
+                                                        <Button size="sm" variant="outline">
+                                                            <PencilIcon />
+                                                            Edit
+                                                        </Button>
+                                                    </Link>
+
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => setSelectedGeneticsIdDelete(item.id)}
+                                                    >
+                                                        <TrashIcon />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                {geneticsListings.length === 0 && (
+                                    <TableCaption>
+                                        No genetics listings found.
+                                    </TableCaption>
+                                )}
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Show Equipment Listings table */}
+                <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70">
+                    <Card className="shadow-none border-none">
+                        <CardHeader>
+                            <CardTitle>Show Equipment</CardTitle>
+                            <CardDescription>
+                                These are your show equipment listings. Show equipment listings are free to post.
+                            </CardDescription>
+                            <CardAction className="flex gap-2">
+                                <Link href={route('show-equipment.create')}>
+                                    <Button size="sm">
+                                        <PlusIcon />
+                                        List Show Equipment
+                                    </Button>
+                                </Link>
+                            </CardAction>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Title</TableHead>
+                                        <TableHead>Condition</TableHead>
+                                        <TableHead>Location</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {showEquipmentListings.map((item) => (
+                                        <TableRow key={item.id}>
+                                            <TableCell className="font-medium">
+                                                <Link href={route('show-equipment.edit', item.id)} className='hover:underline'>
+                                                    {item.title}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.condition}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.location}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2 flex-wrap">
+                                                    <Link href={route('show-equipment.edit', item.id)}>
+                                                        <Button size="sm" variant="outline">
+                                                            <PencilIcon />
+                                                            Edit
+                                                        </Button>
+                                                    </Link>
+
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => setSelectedShowEquipmentIdDelete(item.id)}
+                                                    >
+                                                        <TrashIcon />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                {showEquipmentListings.length === 0 && (
+                                    <TableCaption>
+                                        No show equipment listings found.
+                                    </TableCaption>
+                                )}
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             <Dialog open={selectedSteerIdDelete !== null} onOpenChange={() => setSelectedSteerIdDelete(null)}>
@@ -345,6 +529,38 @@ export default function Dashboard({ steerListings, studListings }: DashboardProp
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setSelectedStudIdDelete(null)}>Cancel</Button>
                             <Button variant="destructive" onClick={() => handleDeleteStud(selectedStudIdDelete!)}>Delete</Button>
+                        </DialogFooter>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={selectedGeneticsIdDelete !== null} onOpenChange={() => setSelectedGeneticsIdDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete the genetics listing
+                            and remove it from our servers. It will also remove it from the public listings, and cancel any subscriptions.
+                        </DialogDescription>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setSelectedGeneticsIdDelete(null)}>Cancel</Button>
+                            <Button variant="destructive" onClick={() => handleDeleteGenetics(selectedGeneticsIdDelete!)}>Delete</Button>
+                        </DialogFooter>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={selectedShowEquipmentIdDelete !== null} onOpenChange={() => setSelectedShowEquipmentIdDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete the show equipment listing
+                            and remove it from our servers. It will also remove it from the public listings.
+                        </DialogDescription>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setSelectedShowEquipmentIdDelete(null)}>Cancel</Button>
+                            <Button variant="destructive" onClick={() => handleDeleteShowEquipment(selectedShowEquipmentIdDelete!)}>Delete</Button>
                         </DialogFooter>
                     </DialogHeader>
                 </DialogContent>

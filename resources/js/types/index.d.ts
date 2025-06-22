@@ -93,3 +93,38 @@ export interface StudListing {
     updated_at: string;
     deleted_at?: string | null;
 }
+
+export interface GeneticsListing {
+    id: number;
+    user_id: number;
+    name: string;
+    price: number;
+    photos: string[]; // Array of photo URLs or paths
+    breed: string;
+    type: 'Semen Straws' | 'Embryos';
+    sire?: string | null;
+    dam?: string | null;
+    registration_link?: string | null;
+    storage_location: 'ACT' | 'NSW' | 'NT' | 'QLD' | 'SA' | 'TAS' | 'VIC' | 'WA';
+    phone_contact?: string | null;
+    email_contact?: string | null;
+    description?: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}
+
+export interface ShowEquipmentListing {
+    id: number;
+    user_id: number;
+    title: string;
+    description?: string | null;
+    photos: string[]; // Array of photo URLs or paths
+    condition: 'New' | 'Like New' | 'Good' | 'Fair' | 'Poor';
+    location: string; // town, state
+    phone_contact?: string | null;
+    email_contact?: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}

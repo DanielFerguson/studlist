@@ -2,10 +2,14 @@
 
 use App\Http\Controllers\SteerListingController;
 use App\Http\Controllers\StudListingController;
+use App\Http\Controllers\GeneticsListingController;
+use App\Http\Controllers\ShowEquipmentListingController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use App\Models\SteerListing;
 use App\Models\StudListing;
+use App\Models\GeneticsListing;
+use App\Models\ShowEquipmentListing;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,14 +50,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 return $listing;
             });
 
+        $geneticsListings = GeneticsListing::where('user_id', auth()->user()->id)
+            ->latest()
+            ->get();
+
+        $showEquipmentListings = ShowEquipmentListing::where('user_id', auth()->user()->id)
+            ->latest()
+            ->get();
+
         return Inertia::render('dashboard', [
             'steerListings' => $steerListings,
             'studListings' => $studListings,
+            'geneticsListings' => $geneticsListings,
+            'showEquipmentListings' => $showEquipmentListings,
         ]);
     })->name('dashboard');
 
     Route::resource('steers', SteerListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('studs', StudListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('genetics', GeneticsListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('show-equipment', ShowEquipmentListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
     // Subscription routes
     Route::prefix('subscriptions')->name('subscription.')->group(function () {

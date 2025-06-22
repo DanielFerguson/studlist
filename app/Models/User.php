@@ -74,6 +74,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the genetics listings for this user.
+     */
+    public function geneticsListings()
+    {
+        return $this->hasMany(\App\Models\GeneticsListing::class);
+    }
+
+    /**
+     * Get the show equipment listings for this user.
+     */
+    public function showEquipmentListings()
+    {
+        return $this->hasMany(\App\Models\ShowEquipmentListing::class);
+    }
+
+    /**
      * Get the subscription for a specific steer listing.
      */
     public function subscriptionForSteer(SteerListing $steer)
