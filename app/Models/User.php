@@ -124,6 +124,10 @@ class User extends Authenticatable implements FilamentUser
      */
     public function isAdmin(): bool
     {
+        if (app()->environment('local')) {
+            return true;
+        }
+
         return $this->is_admin;
     }
 

@@ -99,10 +99,16 @@ class WebhookController extends CashierWebhookController
     /**
      * Update steer listing status from subscription object.
      */
-    private function updateSteerListingFromSubscription($subscription, $status)
+    private function updateSteerListingFromSubscription($subscription, $status = null)
     {
         $stripeSubscriptionId = $subscription['id'];
-        $this->updateSteerListingFromSubscriptionId($stripeSubscriptionId, $status);
+        // If status not provided, get it from subscription object
+        if ($status === null && isset($subscription['status'])) {
+            $status = $subscription['status'];
+        }
+        // Map the Stripe status to our listing status
+        $listingStatus = $this->mapStripeStatusToSteerStatus($status);
+        $this->updateSteerListingFromSubscriptionId($stripeSubscriptionId, $listingStatus);
     }
 
     /**
@@ -140,8 +146,9 @@ class WebhookController extends CashierWebhookController
     private function mapStripeStatusToSteerStatus($stripeStatus)
     {
         return match ($stripeStatus) {
-            'active' => 'active',
-            'canceled', 'incomplete_expired', 'unpaid', 'paused', 'incomplete', 'past_due' => 'cancelled',
+            'active', 'trialing' => 'active',
+            'canceled', 'incomplete_expired', 'unpaid', 'paused', 'incomplete' => 'cancelled',
+            'past_due' => 'active', // Keep active but might need payment update
             default => 'draft'
         };
     }

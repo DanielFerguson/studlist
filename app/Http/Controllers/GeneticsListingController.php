@@ -75,7 +75,10 @@ class GeneticsListingController extends Controller
      */
     public function show(GeneticsListing $genetic)
     {
-        //
+        // Genetics listings don't have status field - they're always visible
+        return Inertia::render('genetics/show', [
+            'listing' => $genetic->load('user'),
+        ]);
     }
 
     /**

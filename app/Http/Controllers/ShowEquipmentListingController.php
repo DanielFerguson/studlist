@@ -68,9 +68,12 @@ class ShowEquipmentListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ShowEquipmentListing $showEquipment)
+    public function show(ShowEquipmentListing $equipment)
     {
-        //
+        // Equipment listings don't have status field - they're always visible
+        return Inertia::render('equipment/show', [
+            'listing' => $equipment->load('user'),
+        ]);
     }
 
     /**

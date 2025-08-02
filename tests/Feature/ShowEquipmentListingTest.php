@@ -2,6 +2,8 @@
 
 use App\Models\ShowEquipmentListing;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 describe('Show Equipment Listing Creation', function () {
     test('guests cannot create show equipment listings', function () {
@@ -108,7 +110,7 @@ describe('Show Equipment Listing Creation', function () {
     });
 });
 
-describe('Show Equipment Listing Viewing', function () {
+describe('Show Equipment Listing Dashboard Display', function () {
     test('users can view their own show equipment listings on dashboard', function () {
         $user = User::factory()->create();
         $equipment = ShowEquipmentListing::factory()->create(['user_id' => $user->id]);
@@ -239,6 +241,105 @@ describe('Show Equipment Listing Deletion', function () {
             ->assertSessionHas('success', 'Show equipment listing deleted successfully!');
 
         $this->assertSoftDeleted('show_equipment_listings', ['id' => $equipment->id]);
+    });
+});
+
+describe('Show Equipment Listing Photo Uploads', function () {
+    test('users can create show equipment listings with photos', function () {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $photo1 = UploadedFile::fake()->image('equipment1.jpg');
+        $photo2 = UploadedFile::fake()->image('equipment2.jpg');
+
+        $equipmentData = [
+            'title' => 'Show Equipment with Photos',
+            'condition' => 'Like New',
+            'location' => 'Brisbane, QLD',
+            'email_contact' => 'photos@example.com',
+            'photos' => [$photo1, $photo2],
+        ];
+
+        $this->actingAs($user)
+            ->post('/show-equipment', $equipmentData)
+            ->assertRedirect('/dashboard')
+            ->assertSessionHas('success');
+
+        $equipment = ShowEquipmentListing::where('user_id', $user->id)->first();
+        $this->assertCount(2, $equipment->photos);
+
+        // Verify files were stored
+        foreach ($equipment->photos as $photoPath) {
+            Storage::disk('public')->assertExists($photoPath);
+        }
+    });
+
+    test('users can update show equipment listings with additional photos', function () {
+        Storage::fake('public');
+        $user = User::factory()->create();
+        $equipment = ShowEquipmentListing::factory()->create([
+            'user_id' => $user->id,
+            'photos' => ['existing-photo.jpg'],
+        ]);
+
+        $newPhoto = UploadedFile::fake()->image('new-equipment.jpg');
+
+        $updateData = [
+            'title' => $equipment->title,
+            'condition' => $equipment->condition,
+            'location' => $equipment->location,
+            'email_contact' => $equipment->email_contact,
+            'phone_contact' => $equipment->phone_contact,
+            'photos' => [$newPhoto],
+        ];
+
+        $this->actingAs($user)
+            ->put("/show-equipment/{$equipment->id}", $updateData)
+            ->assertRedirect('/dashboard');
+
+        $equipment->refresh();
+        // Should have original photo plus new one
+        $this->assertCount(2, $equipment->photos);
+        $this->assertContains('existing-photo.jpg', $equipment->photos);
+    });
+
+    test('show equipment listings work without photos', function () {
+        $user = User::factory()->create();
+
+        $equipmentData = [
+            'title' => 'Equipment without Photos',
+            'condition' => 'Good',
+            'location' => 'Perth, WA',
+            'email_contact' => 'nophotos@example.com',
+        ];
+
+        $this->actingAs($user)
+            ->post('/show-equipment', $equipmentData)
+            ->assertRedirect('/dashboard');
+
+        $equipment = ShowEquipmentListing::where('user_id', $user->id)->first();
+        $this->assertEmpty($equipment->photos);
+    });
+});
+
+
+describe('Show Equipment Listing Policy', function () {
+    test('any authenticated user can create show equipment listings', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/show-equipment/create')
+            ->assertOk();
+    });
+
+    test('restore and force delete are not allowed', function () {
+        $user = User::factory()->create();
+        $equipment = ShowEquipmentListing::factory()->create(['user_id' => $user->id]);
+
+        $policy = new \App\Policies\ShowEquipmentListingPolicy();
+        
+        $this->assertFalse($policy->restore($user, $equipment));
+        $this->assertFalse($policy->forceDelete($user, $equipment));
     });
 });
 

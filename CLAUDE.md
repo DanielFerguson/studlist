@@ -6,12 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 StudList is a marketplace application for cattle listings, allowing users to advertise steers, studs, genetics, equipment, and services. Users create listings and pay a monthly subscription ($15/month) via Stripe to keep their listings visible to buyers.
 
+More information about the project can be found in the @README.md file.
+
 ## Tech Stack
 
 - **Backend**: Laravel 12 with PHP 8.2+
 - **Frontend**: React 19 with TypeScript
 - **SPA Framework**: Inertia.js 2
-- **UI Components**: ShadCN UI with Radix UI primitives
+- **UI Components**: ShadCN UI with Radix UI primitives (members area), TailGrids Tailwind UI (publicly available pages)
 - **Styling**: Tailwind CSS 4
 - **Icons**: Lucide React
 - **Payments**: Stripe with Laravel Cashier
@@ -21,6 +23,7 @@ StudList is a marketplace application for cattle listings, allowing users to adv
 ## Development Commands
 
 ### Start Development Environment
+
 ```bash
 # Starts Laravel server, queue worker, logs, and Vite dev server concurrently
 composer run dev
@@ -30,6 +33,7 @@ composer run dev:ssr
 ```
 
 ### Build & Compile
+
 ```bash
 # Build frontend assets
 npm run build
@@ -39,6 +43,7 @@ npm run build:ssr
 ```
 
 ### Code Quality
+
 ```bash
 # Run PHP tests
 composer test
@@ -65,6 +70,7 @@ npm run types
 ```
 
 ### Database
+
 ```bash
 # Run migrations
 php artisan migrate
@@ -77,6 +83,7 @@ php artisan migrate:fresh --seed
 ```
 
 ### Stripe Testing
+
 ```bash
 # Test subscription for a user and listing
 php artisan test:subscription {user_id} {steer_id}
@@ -85,6 +92,7 @@ php artisan test:subscription {user_id} {steer_id}
 ## Architecture Overview
 
 ### Backend Structure
+
 - **Controllers**: Located in `app/Http/Controllers/`
   - Auth controllers for authentication
   - `SteerListingController` and `StudListingController` for listings
@@ -95,6 +103,7 @@ php artisan test:subscription {user_id} {steer_id}
 - **Requests**: Form validation classes
 
 ### Frontend Structure
+
 - **Pages**: React components in `resources/js/pages/`
   - Auth pages (login, register, password reset)
   - Dashboard for listing management
@@ -110,6 +119,7 @@ php artisan test:subscription {user_id} {steer_id}
   - Settings layout with sidebar
 
 ### Database Schema
+
 - **Users**: Standard Laravel auth
 - **Listings**: 
   - `steer_listings`: Cattle for sale
@@ -122,6 +132,7 @@ php artisan test:subscription {user_id} {steer_id}
 ## Key Development Patterns
 
 ### Inertia.js Pages
+
 ```php
 // Backend (Controller)
 return Inertia::render('PageName', [
@@ -135,16 +146,19 @@ export default function PageName({ data }) {
 ```
 
 ### Form Handling
+
 - Uses `react-hook-form` with Zod validation
 - Form requests on backend for validation
 - Inertia form handling for seamless submission
 
 ### Authentication
+
 - Laravel's built-in auth with Inertia adaptations
 - Protected routes use `auth` and `verified` middleware
 - User menu and navigation components handle auth state
 
 ### File Uploads
+
 - FilePond for image uploads
 - Images stored in `storage/app/public/`
 - Symlinked to `public/storage/`
@@ -160,6 +174,7 @@ export default function PageName({ data }) {
 ## Important Configuration
 
 ### Environment Variables
+
 Key variables to configure:
 - `STRIPE_KEY`: Publishable key
 - `STRIPE_SECRET`: Secret key
@@ -168,6 +183,7 @@ Key variables to configure:
 - `STRIPE_WEBHOOK_SECRET`: For production webhooks
 
 ### Code Style
+
 - **PHP**: PSR-12 standard, enforced by Pint
 - **TypeScript**: Prettier with Tailwind plugin
 - **Indentation**: 4 spaces (2 for YAML)
@@ -189,10 +205,14 @@ Key variables to configure:
 - Stud listings (CRUD + subscriptions)
 - Stripe payment integration
 - Basic dashboard
-
-🚧 Planned:
 - Genetics listings
 - Show equipment listings
 - Services listings (free)
 - Admin panel with Filament
+
+🚧 Planned:
 - Pageview tracking
+
+## Coding Standards
+
+When working on this Laravel/PHP project, first read the coding guidelines at @laravel-php-guidelines.md

@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,18 +11,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a test user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => bcrypt('password'),
-            ]
-        );
+        $this->command->info('Starting database seeding...');
+        $this->command->info('');
 
-        // Seed steer listings
+        // Seed users first (includes admin and test users)
+        $this->call([
+            UserSeeder::class,
+        ]);
+
+        $this->command->info('');
+        $this->command->info('Seeding listings...');
+
+        // Seed all listing types
         $this->call([
             SteerListingSeeder::class,
+            StudListingSeeder::class,
+            GeneticsListingSeeder::class,
+            ShowEquipmentListingSeeder::class,
         ]);
+
+        $this->command->info('');
+        $this->command->info('Database seeding completed successfully!');
+        $this->command->info('');
+        $this->command->info('Summary:');
+        $this->command->info('- Users: ' . \App\Models\User::count());
+        $this->command->info('- Steer Listings: ' . \App\Models\SteerListing::count());
+        $this->command->info('- Stud Listings: ' . \App\Models\StudListing::count());
+        $this->command->info('- Genetics Listings: ' . \App\Models\GeneticsListing::count());
+        $this->command->info('- Show Equipment Listings: ' . \App\Models\ShowEquipmentListing::count());
+        $this->command->info('');
+        $this->command->info('You can log in with:');
+        $this->command->info('Admin: admin@studlist.com / password');
+        $this->command->info('User: john@example.com / password');
     }
 }

@@ -76,9 +76,14 @@ class SteerListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SteerListing $steerListing)
+    public function show(SteerListing $steer)
     {
-        //
+        // Only show active listings publicly
+        abort_if($steer->status !== 'active', 404);
+        
+        return Inertia::render('steers/show', [
+            'listing' => $steer->load('user'),
+        ]);
     }
 
     /**

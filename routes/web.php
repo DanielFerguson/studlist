@@ -14,7 +14,36 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    $steerListings = SteerListing::where('status', 'active')
+        ->with('user')
+        ->latest()
+        ->take(6)
+        ->get();
+
+    $studListings = StudListing::where('status', 'active')
+        ->with('user')
+        ->latest()
+        ->take(6)
+        ->get();
+
+    $geneticsListings = GeneticsListing::where('status', 'active')
+        ->with('user')
+        ->latest()
+        ->take(4)
+        ->get();
+
+    $showEquipmentListings = ShowEquipmentListing::where('status', 'active')
+        ->with('user')
+        ->latest()
+        ->take(4)
+        ->get();
+
+    return Inertia::render('welcome', [
+        'steerListings' => $steerListings,
+        'studListings' => $studListings,
+        'geneticsListings' => $geneticsListings,
+        'showEquipmentListings' => $showEquipmentListings,
+    ]);
 })->name('home');
 
 // Stripe webhook route (must be outside auth middleware)
@@ -84,6 +113,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('billing-portal', [SubscriptionController::class, 'billingPortal'])->name('billing-portal');
     });
 });
+
+// Public search route
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
+// About Us page
+Route::get('/about', function () {
+    return Inertia::render('about');
+})->name('about');
+
+// Public listing view routes
+Route::get('/steers/{steer}', [SteerListingController::class, 'show'])->name('steers.show');
+Route::get('/studs/{stud}', [StudListingController::class, 'show'])->name('studs.show');
+Route::get('/genetics/{genetic}', [GeneticsListingController::class, 'show'])->name('genetics.show');
+Route::get('/equipment/{equipment}', [ShowEquipmentListingController::class, 'show'])->name('equipment.show');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

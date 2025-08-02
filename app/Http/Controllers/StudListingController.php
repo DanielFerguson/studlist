@@ -74,9 +74,14 @@ class StudListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(StudListing $studListing)
+    public function show(StudListing $stud)
     {
-        //
+        // Only show active listings publicly
+        abort_if($stud->status !== 'active', 404);
+        
+        return Inertia::render('studs/show', [
+            'listing' => $stud->load('user'),
+        ]);
     }
 
     /**
