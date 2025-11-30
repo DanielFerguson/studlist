@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Breed;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateGeneticsListingRequest extends FormRequest
 {
@@ -26,7 +28,7 @@ class UpdateGeneticsListingRequest extends FormRequest
             'price' => 'required|numeric|min:0|max:999999.99',
             'photos' => 'nullable|array|max:10',
             'photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max per image
-            'breed' => 'required|string|in:Angus,Hereford,Shorthorn,Charolais,Limousin,Wagyu,Other',
+            'breed' => ['required', 'string', new Enum(Breed::class)],
             'type' => 'required|string|in:Semen Straws,Embryos',
             'sire' => 'nullable|string|max:255',
             'dam' => 'nullable|string|max:255',
@@ -49,7 +51,7 @@ class UpdateGeneticsListingRequest extends FormRequest
             'photos.max' => 'You can upload a maximum of 10 photos.',
             'photos.*.image' => 'All uploaded files must be images.',
             'photos.*.max' => 'Each image must be smaller than 5MB.',
-            'breed.in' => 'Please select a valid breed.',
+            'breed.Illuminate\Validation\Rules\Enum' => 'Please select a valid breed.',
             'type.in' => 'Please select a valid genetics type.',
             'storage_location.in' => 'Please select a valid Australian state.',
             'registration_link.url' => 'The registration link must be a valid URL.',

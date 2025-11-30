@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Breed;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateStudListingRequest extends FormRequest
 {
@@ -26,7 +28,7 @@ class UpdateStudListingRequest extends FormRequest
             'photos' => 'nullable|array|max:10',
             'photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max per image
             'dob' => 'required|date|before:today|after:1900-01-01',
-            'breed' => 'required|string|in:Angus,Hereford,Shorthorn,Charolais,Limousin,Wagyu,Other',
+            'breed' => ['required', 'string', new Enum(Breed::class)],
             'colour' => 'required|string|in:Black,Red,White,Brown,Grey,Dun,Other',
             'tattoo_number' => 'nullable|string|max:50',
             'location' => 'required|string|min:2|max:255',
@@ -54,7 +56,7 @@ class UpdateStudListingRequest extends FormRequest
             'photos.max' => 'You can upload a maximum of 10 photos.',
             'photos.*.image' => 'All uploaded files must be images.',
             'photos.*.max' => 'Each image must be smaller than 5MB.',
-            'breed.in' => 'Please select a valid breed.',
+            'breed.Illuminate\Validation\Rules\Enum' => 'Please select a valid breed.',
             'colour.in' => 'Please select a valid colour.',
             'registration_link.url' => 'Registration link must be a valid URL.',
         ];
