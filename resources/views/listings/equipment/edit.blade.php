@@ -27,13 +27,7 @@
                         <x-form.select 
                             name="condition" 
                             label="Condition"
-                            :options="[
-                                'New' => 'New',
-                                'Like New' => 'Like New',
-                                'Good' => 'Good',
-                                'Fair' => 'Fair',
-                                'Poor' => 'Poor',
-                            ]"
+                            :options="App\Enums\EquipmentCondition::toSelectOptions()"
                             :value="$showEquipment->condition"
                             description="The condition of the equipment."
                             required
@@ -106,4 +100,5 @@
         </div>
     </div>
 </x-layouts.app>
+
 

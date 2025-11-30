@@ -70,3 +70,4 @@ class UpdateServiceListingRequest extends FormRequest
         });
     }
 }
+

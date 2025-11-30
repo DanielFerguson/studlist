@@ -31,15 +31,7 @@
                         <x-form.select 
                             name="breed" 
                             label="Breed"
-                            :options="[
-                                'Angus' => 'Angus',
-                                'Hereford' => 'Hereford',
-                                'Shorthorn' => 'Shorthorn',
-                                'Charolais' => 'Charolais',
-                                'Limousin' => 'Limousin',
-                                'Wagyu' => 'Wagyu',
-                                'Other' => 'Other',
-                            ]"
+                            :options="App\Enums\Breed::toSelectOptions()"
                             description="The breed of the stud."
                             required
                         />
@@ -47,15 +39,7 @@
                         <x-form.select 
                             name="colour" 
                             label="Colour"
-                            :options="[
-                                'Black' => 'Black',
-                                'Red' => 'Red',
-                                'White' => 'White',
-                                'Brown' => 'Brown',
-                                'Grey' => 'Grey',
-                                'Dun' => 'Dun',
-                                'Other' => 'Other',
-                            ]"
+                            :options="App\Enums\Colour::toSelectOptions()"
                             description="The colour of the stud."
                             required
                         />
@@ -176,4 +160,5 @@
         </div>
     </div>
 </x-layouts.app>
+
 

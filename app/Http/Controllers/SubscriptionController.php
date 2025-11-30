@@ -6,7 +6,6 @@ use App\Models\SteerListing;
 use App\Models\StudListing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
 class SubscriptionController extends Controller
 {
@@ -53,17 +52,16 @@ class SubscriptionController extends Controller
             }
 
             // Create a checkout session for a monthly subscription
-            $checkout = $user->newSubscription('steer_'.$steer->id, config('cashier.price_ids.steer_listing'))
+            $checkout = $user->newSubscription('steer_' . $steer->id, config('cashier.price_ids.steer_listing'))
                 ->checkout([
-                    'success_url' => route('subscription.success', ['steer' => $steer->id]).'?session_id={CHECKOUT_SESSION_ID}',
+                    'success_url' => route('subscription.success', ['steer' => $steer->id]) . '?session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url' => route('dashboard'),
                     'metadata' => [
                         'steer_listing_id' => $steer->id,
                     ],
                 ]);
 
-            return Inertia::location($checkout->url);
-
+            return redirect()->away($checkout->url);
         } catch (\Exception $e) {
             Log::error('Subscription checkout error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 
@@ -92,7 +90,7 @@ class SubscriptionController extends Controller
 
                 // Check if there's an existing subscription for this steer that we need to handle
                 $existingSubscription = $user->subscriptions()
-                    ->where('type', 'steer_'.$steer->id)
+                    ->where('type', 'steer_' . $steer->id)
                     ->first();
 
                 if ($existingSubscription) {
@@ -106,7 +104,7 @@ class SubscriptionController extends Controller
                 } else {
                     // Create the subscription record in Laravel's database
                     $subscription = $user->subscriptions()->create([
-                        'type' => 'steer_'.$steer->id,
+                        'type' => 'steer_' . $steer->id,
                         'stripe_id' => $session->subscription,
                         'stripe_status' => 'active',
                         'stripe_price' => config('cashier.price_ids.steer_listing'),
@@ -140,7 +138,6 @@ class SubscriptionController extends Controller
             }
 
             return redirect()->route('dashboard')->with('error', 'Payment was not completed successfully.');
-
         } catch (\Exception $e) {
             Log::error('Subscription success error', ['error' => $e->getMessage(), 'steer_id' => $steer->id]);
 
@@ -180,7 +177,6 @@ class SubscriptionController extends Controller
             }
 
             return redirect()->route('dashboard')->with('error', 'Subscription not found.');
-
         } catch (\Exception $e) {
             Log::error('Subscription cancel error', ['error' => $e->getMessage(), 'steer_id' => $steer->id]);
 
@@ -257,17 +253,16 @@ class SubscriptionController extends Controller
             }
 
             // Create a checkout session for a monthly subscription
-            $checkout = $user->newSubscription('stud_'.$stud->id, config('cashier.price_ids.steer_listing'))
+            $checkout = $user->newSubscription('stud_' . $stud->id, config('cashier.price_ids.steer_listing'))
                 ->checkout([
-                    'success_url' => route('subscription.success-stud', ['stud' => $stud->id]).'?session_id={CHECKOUT_SESSION_ID}',
+                    'success_url' => route('subscription.success-stud', ['stud' => $stud->id]) . '?session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url' => route('dashboard'),
                     'metadata' => [
                         'stud_listing_id' => $stud->id,
                     ],
                 ]);
 
-            return Inertia::location($checkout->url);
-
+            return redirect()->away($checkout->url);
         } catch (\Exception $e) {
             Log::error('Subscription checkout error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 
@@ -296,7 +291,7 @@ class SubscriptionController extends Controller
 
                 // Check if there's an existing subscription for this stud that we need to handle
                 $existingSubscription = $user->subscriptions()
-                    ->where('type', 'stud_'.$stud->id)
+                    ->where('type', 'stud_' . $stud->id)
                     ->first();
 
                 if ($existingSubscription) {
@@ -310,7 +305,7 @@ class SubscriptionController extends Controller
                 } else {
                     // Create the subscription record in Laravel's database
                     $subscription = $user->subscriptions()->create([
-                        'type' => 'stud_'.$stud->id,
+                        'type' => 'stud_' . $stud->id,
                         'stripe_id' => $session->subscription,
                         'stripe_status' => 'active',
                         'stripe_price' => config('cashier.price_ids.steer_listing'),
@@ -344,7 +339,6 @@ class SubscriptionController extends Controller
             }
 
             return redirect()->route('dashboard')->with('error', 'Payment was not completed successfully.');
-
         } catch (\Exception $e) {
             Log::error('Subscription success error', ['error' => $e->getMessage(), 'stud_id' => $stud->id]);
 
@@ -389,7 +383,6 @@ class SubscriptionController extends Controller
             }
 
             return redirect()->route('dashboard')->with('error', 'Subscription not found.');
-
         } catch (\Exception $e) {
             Log::error('Subscription cancel error', ['error' => $e->getMessage(), 'stud_id' => $stud->id]);
 

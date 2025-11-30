@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AustralianState;
 use App\Filament\Resources\ServiceListingResource\Pages;
 use App\Models\ServiceListing;
 use Filament\Forms;
@@ -49,16 +50,7 @@ class ServiceListingResource extends Resource
                     ->email()
                     ->maxLength(255),
                 Forms\Components\CheckboxList::make('locations_covered')
-                    ->options([
-                        'ACT' => 'Australian Capital Territory',
-                        'NSW' => 'New South Wales',
-                        'NT' => 'Northern Territory',
-                        'QLD' => 'Queensland',
-                        'SA' => 'South Australia',
-                        'TAS' => 'Tasmania',
-                        'VIC' => 'Victoria',
-                        'WA' => 'Western Australia',
-                    ])
+                    ->options(AustralianState::toSelectOptions())
                     ->required()
                     ->columns(2),
                 Forms\Components\Repeater::make('links')
@@ -147,3 +139,4 @@ class ServiceListingResource extends Resource
         ];
     }
 }
+

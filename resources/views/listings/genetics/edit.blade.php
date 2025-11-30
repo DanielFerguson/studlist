@@ -35,11 +35,7 @@
                         <x-form.select 
                             name="type" 
                             label="Type"
-                            :options="[
-                                'Semen' => 'Semen',
-                                'Embryo' => 'Embryo',
-                                'Other' => 'Other',
-                            ]"
+                            :options="App\Enums\GeneticsType::toSelectOptions()"
                             :value="$genetics->type"
                             description="The type of genetics being offered."
                             required
@@ -48,15 +44,7 @@
                         <x-form.select 
                             name="breed" 
                             label="Breed"
-                            :options="[
-                                'Angus' => 'Angus',
-                                'Hereford' => 'Hereford',
-                                'Shorthorn' => 'Shorthorn',
-                                'Charolais' => 'Charolais',
-                                'Limousin' => 'Limousin',
-                                'Wagyu' => 'Wagyu',
-                                'Other' => 'Other',
-                            ]"
+                            :options="App\Enums\Breed::toSelectOptions()"
                             :value="$genetics->breed"
                             description="The breed of the genetics."
                             required
@@ -163,4 +151,5 @@
         </div>
     </div>
 </x-layouts.app>
+
 

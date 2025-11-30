@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AustralianState;
+use App\Enums\Breed;
+use App\Enums\GeneticsType;
 use App\Filament\Resources\GeneticsListingResource\Pages;
 use App\Models\GeneticsListing;
 use Filament\Forms;
@@ -39,14 +42,12 @@ class GeneticsListingResource extends Resource
                     ->numeric()
                     ->prefix('$')
                     ->required(),
-                Forms\Components\TextInput::make('breed')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('breed')
+                    ->options(Breed::toSelectOptions())
+                    ->searchable()
+                    ->required(),
                 Forms\Components\Select::make('type')
-                    ->options([
-                        'Semen Straws' => 'Semen Straws',
-                        'Embryos' => 'Embryos',
-                    ])
+                    ->options(GeneticsType::toSelectOptions())
                     ->required(),
                 Forms\Components\TextInput::make('sire')
                     ->maxLength(255),
@@ -56,16 +57,7 @@ class GeneticsListingResource extends Resource
                     ->url()
                     ->maxLength(255),
                 Forms\Components\Select::make('storage_location')
-                    ->options([
-                        'ACT' => 'Australian Capital Territory',
-                        'NSW' => 'New South Wales',
-                        'NT' => 'Northern Territory',
-                        'QLD' => 'Queensland',
-                        'SA' => 'South Australia',
-                        'TAS' => 'Tasmania',
-                        'VIC' => 'Victoria',
-                        'WA' => 'Western Australia',
-                    ])
+                    ->options(AustralianState::toSelectOptions())
                     ->required(),
                 Forms\Components\TextInput::make('phone_contact')
                     ->maxLength(255),
@@ -113,21 +105,12 @@ class GeneticsListingResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
-                    ->options([
-                        'Semen Straws' => 'Semen Straws',
-                        'Embryos' => 'Embryos',
-                    ]),
+                    ->options(GeneticsType::toSelectOptions()),
                 Tables\Filters\SelectFilter::make('user')
                     ->relationship('user', 'name')
                     ->searchable(),
                 Tables\Filters\SelectFilter::make('breed')
-                    ->options([
-                        'Angus' => 'Angus',
-                        'Hereford' => 'Hereford',
-                        'Charolais' => 'Charolais',
-                        'Brahman' => 'Brahman',
-                        'Other' => 'Other',
-                    ]),
+                    ->options(Breed::toSelectOptions()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

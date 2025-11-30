@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\EquipmentCondition;
 use App\Filament\Resources\ShowEquipmentListingResource\Pages;
 use App\Models\ShowEquipmentListing;
 use Filament\Forms;
@@ -41,13 +42,7 @@ class ShowEquipmentListingResource extends Resource
                     ->required()
                     ->rows(3),
                 Forms\Components\Select::make('condition')
-                    ->options([
-                        'new' => 'New',
-                        'excellent' => 'Excellent',
-                        'good' => 'Good',
-                        'fair' => 'Fair',
-                        'poor' => 'Poor',
-                    ])
+                    ->options(EquipmentCondition::toSelectOptions())
                     ->required(),
                 Forms\Components\TextInput::make('location')
                     ->maxLength(255),
@@ -77,11 +72,11 @@ class ShowEquipmentListingResource extends Resource
                     ->wrap(),
                 Tables\Columns\BadgeColumn::make('condition')
                     ->colors([
-                        'success' => 'new',
-                        'primary' => 'excellent',
-                        'warning' => 'good',
-                        'danger' => 'fair',
-                        'gray' => 'poor',
+                        'success' => 'New',
+                        'primary' => 'Like New',
+                        'warning' => 'Good',
+                        'danger' => 'Fair',
+                        'gray' => 'Poor',
                     ]),
                 Tables\Columns\TextColumn::make('location'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -95,13 +90,7 @@ class ShowEquipmentListingResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('condition')
-                    ->options([
-                        'new' => 'New',
-                        'excellent' => 'Excellent',
-                        'good' => 'Good',
-                        'fair' => 'Fair',
-                        'poor' => 'Poor',
-                    ]),
+                    ->options(EquipmentCondition::toSelectOptions()),
                 Tables\Filters\SelectFilter::make('user')
                     ->relationship('user', 'name')
                     ->searchable(),

@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Breed;
+use App\Enums\Colour;
+use App\Enums\ListingStatus;
 use App\Filament\Resources\StudListingResource\Pages;
 use App\Models\StudListing;
 use Filament\Forms;
@@ -36,10 +39,12 @@ class StudListingResource extends Resource
                     ->maxFiles(10)
                     ->reorderable(),
                 Forms\Components\DatePicker::make('date_of_birth'),
-                Forms\Components\TextInput::make('breed')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('colour')
-                    ->maxLength(255),
+                Forms\Components\Select::make('breed')
+                    ->options(Breed::toSelectOptions())
+                    ->searchable(),
+                Forms\Components\Select::make('colour')
+                    ->options(Colour::toSelectOptions())
+                    ->searchable(),
                 Forms\Components\TextInput::make('tattoo_number')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('location')
@@ -63,10 +68,7 @@ class StudListingResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->rows(3),
                 Forms\Components\Select::make('status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'active' => 'Active',
-                    ])
+                    ->options(ListingStatus::toSelectOptions())
                     ->required(),
                 Forms\Components\TextInput::make('stripe_subscription_id')
                     ->maxLength(255)
@@ -111,21 +113,12 @@ class StudListingResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'active' => 'Active',
-                    ]),
+                    ->options(ListingStatus::toSelectOptions()),
                 Tables\Filters\SelectFilter::make('user')
                     ->relationship('user', 'name')
                     ->searchable(),
                 Tables\Filters\SelectFilter::make('breed')
-                    ->options([
-                        'Angus' => 'Angus',
-                        'Hereford' => 'Hereford',
-                        'Charolais' => 'Charolais',
-                        'Brahman' => 'Brahman',
-                        'Other' => 'Other',
-                    ]),
+                    ->options(Breed::toSelectOptions()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
