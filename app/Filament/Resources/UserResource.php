@@ -72,6 +72,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('showEquipmentListings_count')
                     ->counts('showEquipmentListings')
                     ->label('Equipment Listings'),
+                Tables\Columns\TextColumn::make('serviceListings_count')
+                    ->counts('serviceListings')
+                    ->label('Service Listings'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

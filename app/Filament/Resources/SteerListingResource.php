@@ -29,6 +29,12 @@ class SteerListingResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('photos')
+                    ->multiple()
+                    ->image()
+                    ->directory('listings/steers')
+                    ->maxFiles(10)
+                    ->reorderable(),
                 Forms\Components\DatePicker::make('date_of_birth'),
                 Forms\Components\TextInput::make('breed')
                     ->maxLength(255),
@@ -85,7 +91,7 @@ class SteerListingResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('location'),
                 Tables\Columns\TextColumn::make('price')
-                    ->money('USD')
+                    ->money('AUD')
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([

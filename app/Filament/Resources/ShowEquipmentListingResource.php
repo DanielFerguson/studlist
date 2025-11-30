@@ -31,6 +31,12 @@ class ShowEquipmentListingResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('photos')
+                    ->multiple()
+                    ->image()
+                    ->directory('listings/equipment')
+                    ->maxFiles(10)
+                    ->reorderable(),
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->rows(3),

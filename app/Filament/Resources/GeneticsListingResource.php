@@ -29,17 +29,25 @@ class GeneticsListingResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('photos')
+                    ->multiple()
+                    ->image()
+                    ->directory('listings/genetics')
+                    ->maxFiles(10)
+                    ->reorderable(),
                 Forms\Components\TextInput::make('price')
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('$')
+                    ->required(),
                 Forms\Components\TextInput::make('breed')
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('type')
                     ->options([
-                        'semen' => 'Semen',
-                        'embryo' => 'Embryo',
-                        'other' => 'Other',
-                    ]),
+                        'Semen Straws' => 'Semen Straws',
+                        'Embryos' => 'Embryos',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('sire')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('dam')
@@ -47,8 +55,18 @@ class GeneticsListingResource extends Resource
                 Forms\Components\TextInput::make('registration_link')
                     ->url()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('storage_location')
-                    ->maxLength(255),
+                Forms\Components\Select::make('storage_location')
+                    ->options([
+                        'ACT' => 'Australian Capital Territory',
+                        'NSW' => 'New South Wales',
+                        'NT' => 'Northern Territory',
+                        'QLD' => 'Queensland',
+                        'SA' => 'South Australia',
+                        'TAS' => 'Tasmania',
+                        'VIC' => 'Victoria',
+                        'WA' => 'Western Australia',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('phone_contact')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email_contact')
@@ -76,12 +94,11 @@ class GeneticsListingResource extends Resource
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('type')
                     ->colors([
-                        'primary' => 'semen',
-                        'success' => 'embryo',
-                        'warning' => 'other',
+                        'primary' => 'Semen Straws',
+                        'success' => 'Embryos',
                     ]),
                 Tables\Columns\TextColumn::make('price')
-                    ->money('USD')
+                    ->money('AUD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('storage_location')
                     ->label('Storage'),
@@ -97,9 +114,8 @@ class GeneticsListingResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'semen' => 'Semen',
-                        'embryo' => 'Embryo',
-                        'other' => 'Other',
+                        'Semen Straws' => 'Semen Straws',
+                        'Embryos' => 'Embryos',
                     ]),
                 Tables\Filters\SelectFilter::make('user')
                     ->relationship('user', 'name')

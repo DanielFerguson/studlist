@@ -95,6 +95,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the service listings for this user.
+     */
+    public function serviceListings()
+    {
+        return $this->hasMany(\App\Models\ServiceListing::class);
+    }
+
+    /**
      * Get the subscription for a specific steer listing.
      */
     public function subscriptionForSteer(SteerListing $steer)

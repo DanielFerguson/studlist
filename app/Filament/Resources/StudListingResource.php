@@ -29,6 +29,12 @@ class StudListingResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('photos')
+                    ->multiple()
+                    ->image()
+                    ->directory('listings/studs')
+                    ->maxFiles(10)
+                    ->reorderable(),
                 Forms\Components\DatePicker::make('date_of_birth'),
                 Forms\Components\TextInput::make('breed')
                     ->maxLength(255),
