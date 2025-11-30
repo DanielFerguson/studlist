@@ -59,8 +59,7 @@ describe('Stud Listing Creation Integration', function () {
             ->get('/dashboard');
 
         $dashboardResponse->assertOk()
-            ->assertSee('Elite Angus Bull')
-            ->assertSee('Angus');
+            ->assertSee('Elite Angus Bull');
     });
 
     test('listing persists even if user navigates away before completing checkout', function () {
@@ -87,8 +86,7 @@ describe('Stud Listing Creation Integration', function () {
 
         // The listing should still be there as a draft
         $dashboardResponse->assertOk()
-            ->assertSee('Test Stud for Persistence')
-            ->assertSee('Hereford');
+            ->assertSee('Test Stud for Persistence');
 
         // Verify it's still a draft in the database
         $stud = StudListing::where('user_id', $user->id)

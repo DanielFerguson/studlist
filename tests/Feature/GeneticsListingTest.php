@@ -18,7 +18,7 @@ describe('Genetics Listing Creation', function () {
         $this->actingAs($user)
             ->get('/genetics/create')
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('genetics-listings/create'));
+            ->assertViewIs('listings.genetics.create');
     });
 
     test('users can create a genetics listing with basic data', function () {
@@ -188,10 +188,8 @@ describe('Genetics Listing Editing', function () {
         $this->actingAs($user)
             ->get("/genetics/{$genetics->id}/edit")
             ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('genetics-listings/edit')
-                ->has('genetics')
-            );
+            ->assertViewIs('listings.genetics.edit')
+            ->assertViewHas('genetics');
     });
 
     test('users can update their genetics listings', function () {

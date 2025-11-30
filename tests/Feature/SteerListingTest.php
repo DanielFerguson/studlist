@@ -19,7 +19,7 @@ describe('Steer Listing Creation', function () {
         $this->actingAs($user)
             ->get('/steers/create')
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('steer-listings/create'));
+            ->assertViewIs('listings.steers.create');
     });
 
     test('users can create a steer listing with basic data', function () {
@@ -144,10 +144,8 @@ describe('Steer Listing Editing', function () {
         $this->actingAs($user)
             ->get("/steers/{$steer->id}/edit")
             ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('steer-listings/edit')
-                ->has('steer')
-            );
+            ->assertViewIs('listings.steers.edit')
+            ->assertViewHas('steer');
     });
 
     test('users can update their steer listings', function () {

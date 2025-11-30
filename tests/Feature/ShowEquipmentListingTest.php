@@ -20,7 +20,7 @@ describe('Show Equipment Listing Creation', function () {
         $this->actingAs($user)
             ->get('/show-equipment/create')
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('show-equipment-listings/create'));
+            ->assertViewIs('listings.equipment.create');
     });
 
     test('users can create a show equipment listing with basic data', function () {
@@ -176,10 +176,8 @@ describe('Show Equipment Listing Editing', function () {
         $this->actingAs($user)
             ->get("/show-equipment/{$equipment->id}/edit")
             ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('show-equipment-listings/edit')
-                ->has('showEquipment')
-            );
+            ->assertViewIs('listings.equipment.edit')
+            ->assertViewHas('showEquipment');
     });
 
     test('users can update their show equipment listings', function () {

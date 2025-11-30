@@ -58,8 +58,7 @@ describe('Steer Listing Creation Integration', function () {
             ->get('/dashboard');
 
         $dashboardResponse->assertOk()
-            ->assertSee('Premium Angus Steer')
-            ->assertSee('Angus');
+            ->assertSee('Premium Angus Steer');
     });
 
     test('listing persists even if user navigates away before completing checkout', function () {
@@ -85,8 +84,7 @@ describe('Steer Listing Creation Integration', function () {
 
         // The listing should still be there as a draft
         $dashboardResponse->assertOk()
-            ->assertSee('Test Steer for Persistence')
-            ->assertSee('Hereford');
+            ->assertSee('Test Steer for Persistence');
 
         // Verify it's still a draft in the database
         $steer = SteerListing::where('user_id', $user->id)

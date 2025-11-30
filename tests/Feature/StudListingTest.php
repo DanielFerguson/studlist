@@ -19,7 +19,7 @@ describe('Stud Listing Creation', function () {
         $this->actingAs($user)
             ->get('/studs/create')
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('stud-listings/create'));
+            ->assertViewIs('listings.studs.create');
     });
 
     test('users can create a stud listing with basic data', function () {
@@ -178,10 +178,8 @@ describe('Stud Listing Editing', function () {
         $this->actingAs($user)
             ->get("/studs/{$stud->id}/edit")
             ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('stud-listings/edit')
-                ->has('stud')
-            );
+            ->assertViewIs('listings.studs.edit')
+            ->assertViewHas('stud');
     });
 
     test('users can update their stud listings', function () {

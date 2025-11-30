@@ -17,7 +17,7 @@ describe('Dashboard Access', function () {
         $this->actingAs($user)
             ->get('/dashboard')
             ->assertOk()
-            ->assertViewIs('app');
+            ->assertViewIs('dashboard.index');
     });
 });
 
