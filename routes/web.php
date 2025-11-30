@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GeneticsListingController;
+use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\ServiceListingController;
 use App\Http\Controllers\ShowEquipmentListingController;
 use App\Http\Controllers\SteerListingController;
@@ -15,37 +16,8 @@ use App\Models\StudListing;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    $steerListings = SteerListing::where('status', 'active')
-        ->with('user')
-        ->latest()
-        ->take(6)
-        ->get();
-
-    $studListings = StudListing::where('status', 'active')
-        ->with('user')
-        ->latest()
-        ->take(6)
-        ->get();
-
-    // Genetics and Show Equipment listings are free - no status filter needed
-    $geneticsListings = GeneticsListing::with('user')
-        ->latest()
-        ->take(4)
-        ->get();
-
-    $showEquipmentListings = ShowEquipmentListing::with('user')
-        ->latest()
-        ->take(4)
-        ->get();
-
-    return Inertia::render('welcome', [
-        'steerListings' => $steerListings,
-        'studListings' => $studListings,
-        'geneticsListings' => $geneticsListings,
-        'showEquipmentListings' => $showEquipmentListings,
-    ]);
-})->name('home');
+// Public pages (Blade templates)
+Route::get('/', [PublicPageController::class, 'home'])->name('home');
 
 // Stripe webhook route (must be outside auth middleware)
 Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
@@ -121,20 +93,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-// Public search route
-Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+// Public pages (Blade templates)
+Route::get('/search', [PublicPageController::class, 'search'])->name('search');
+Route::get('/about', [PublicPageController::class, 'about'])->name('about');
 
-// About Us page
-Route::get('/about', function () {
-    return Inertia::render('about');
-})->name('about');
-
-// Public listing view routes
-Route::get('/steers/{steer}', [SteerListingController::class, 'show'])->name('steers.show');
-Route::get('/studs/{stud}', [StudListingController::class, 'show'])->name('studs.show');
-Route::get('/genetics/{genetic}', [GeneticsListingController::class, 'show'])->name('genetics.show');
-Route::get('/equipment/{equipment}', [ShowEquipmentListingController::class, 'show'])->name('equipment.show');
-Route::get('/services/{service}', [ServiceListingController::class, 'show'])->name('services.show');
+// Public listing view routes (Blade templates)
+Route::get('/steers/{steer}', [PublicPageController::class, 'showSteer'])->name('steers.show');
+Route::get('/studs/{stud}', [PublicPageController::class, 'showStud'])->name('studs.show');
+Route::get('/genetics/{genetic}', [PublicPageController::class, 'showGenetics'])->name('genetics.show');
+Route::get('/equipment/{equipment}', [PublicPageController::class, 'showEquipment'])->name('equipment.show');
+Route::get('/services/{service}', [PublicPageController::class, 'showService'])->name('services.show');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
