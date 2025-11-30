@@ -8,24 +8,11 @@
     'existingFiles' => [],
 ])
 
-<div 
-    x-data="{ 
-        pond: null,
-        existingFiles: @js($existingFiles),
-        init() {
-            this.pond = FilePond.create(this.$refs.input, {
-                allowMultiple: {{ $multiple ? 'true' : 'false' }},
-                maxFiles: {{ $maxFiles }},
-                name: '{{ $name }}',
-                labelIdle: 'Drag & Drop your photos or <span class=\"filepond--label-action\">Browse</span>',
-                acceptedFileTypes: ['image/*'],
-                maxFileSize: '5MB',
-                imagePreviewHeight: 170,
-                credits: false,
-            });
-        }
-    }"
->
+@php
+    $inputId = 'filepond-' . Str::random(8);
+@endphp
+
+<div>
     @if($label)
         <label class="form-label">
             {{ $label }}
@@ -55,10 +42,11 @@
 
     <input 
         type="file" 
-        x-ref="input"
+        id="{{ $inputId }}"
+        name="{{ $name }}"
         {{ $multiple ? 'multiple' : '' }}
         accept="image/*"
-        class="hidden"
+        class="filepond"
     >
 
     @if($description)
@@ -73,4 +61,24 @@
     @enderror
 </div>
 
-
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('{{ $inputId }}');
+        if (input && typeof FilePond !== 'undefined') {
+            FilePond.create(input, {
+                allowMultiple: {{ $multiple ? 'true' : 'false' }},
+                maxFiles: {{ $maxFiles }},
+                labelIdle: 'Drag & Drop your photos or <span class="filepond--label-action">Browse</span>',
+                acceptedFileTypes: ['image/*'],
+                maxFileSize: '5MB',
+                imagePreviewHeight: 170,
+                credits: false,
+                stylePanelLayout: null,
+                // Required for standard form submission - stores files as File objects
+                storeAsFile: true,
+            });
+        }
+    });
+</script>
+@endpush

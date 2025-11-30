@@ -300,8 +300,6 @@
         }
     </style>
 
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="min-h-screen bg-[var(--color-warm-white)]">
     <div class="flex min-h-screen" x-data="{ sidebarOpen: false }">
@@ -333,11 +331,11 @@
         </div>
     </div>
 
-    <!-- FilePond JS -->
+    <!-- FilePond JS - Main library must load first, then plugins -->
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
-    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
     <!-- Pikaday JS -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js"></script>
@@ -356,13 +354,16 @@
             acceptedFileTypes: ['image/*'],
             maxFileSize: '5MB',
             imagePreviewHeight: 170,
-            stylePanelLayout: 'compact circle',
             styleLoadIndicatorPosition: 'center bottom',
             styleProgressIndicatorPosition: 'right bottom',
             styleButtonRemoveItemPosition: 'left bottom',
             styleButtonProcessItemPosition: 'right bottom',
         });
+
     </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('scripts')
 </body>

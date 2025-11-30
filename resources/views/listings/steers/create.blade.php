@@ -36,7 +36,7 @@
 
                 {{-- Photos --}}
                 <x-form.section title="Photos" description="Upload images of your steer">
-                    <x-form.file-upload name="photos[]" label="Photos"
+                    <x-form.file-upload name="photos[]"
                         description="Upload photos of the steer (up to 10 images, max 5MB each)." />
                 </x-form.section>
 
