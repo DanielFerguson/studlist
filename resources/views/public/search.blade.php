@@ -19,7 +19,7 @@
                         name="search"
                         value="{{ $filters['search'] ?? '' }}"
                         placeholder="Search by name, breed, or location..."
-                        class="w-full px-6 py-4 pl-14 rounded-xl border-0 shadow-lg text-[var(--color-text)] placeholder-[var(--color-text-light)] focus:ring-2 focus:ring-[var(--color-accent)]"
+                        class="w-full px-6 py-4 pl-14 rounded-xl border-0 shadow-lg bg-white text-[var(--color-text)] placeholder-[var(--color-text-light)] focus:ring-2 focus:ring-[var(--color-accent)]"
                     >
                     <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-light)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>

@@ -57,7 +57,6 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(139, 69, 19, 0.35);
         }
 
@@ -72,7 +71,6 @@
         }
 
         .btn-secondary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(85, 107, 47, 0.35);
         }
 
@@ -102,7 +100,6 @@
         }
 
         .card-rustic:hover {
-            transform: translateY(-4px);
             box-shadow: 0 8px 30px rgba(61, 41, 20, 0.15);
         }
 

@@ -41,7 +41,7 @@
             <img 
                 src="{{ Storage::url($image) }}" 
                 alt="{{ $title }}"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                class="w-full h-full object-cover"
             >
         @else
             <div class="w-full h-full flex items-center justify-center">
