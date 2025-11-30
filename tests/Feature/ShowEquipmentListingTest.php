@@ -322,7 +322,6 @@ describe('Show Equipment Listing Photo Uploads', function () {
     });
 });
 
-
 describe('Show Equipment Listing Policy', function () {
     test('any authenticated user can create show equipment listings', function () {
         $user = User::factory()->create();
@@ -336,8 +335,8 @@ describe('Show Equipment Listing Policy', function () {
         $user = User::factory()->create();
         $equipment = ShowEquipmentListing::factory()->create(['user_id' => $user->id]);
 
-        $policy = new \App\Policies\ShowEquipmentListingPolicy();
-        
+        $policy = new \App\Policies\ShowEquipmentListingPolicy;
+
         $this->assertFalse($policy->restore($user, $equipment));
         $this->assertFalse($policy->forceDelete($user, $equipment));
     });

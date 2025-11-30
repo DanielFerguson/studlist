@@ -173,7 +173,7 @@ class SubscriptionController extends Controller
                 } else {
                     $subscription->cancel();
                 }
-                
+
                 $steer->update(['status' => 'cancelled']);
 
                 return redirect()->route('dashboard')->with('success', 'Subscription cancelled successfully.');

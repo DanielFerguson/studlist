@@ -18,28 +18,28 @@ trait ListingTestHelpers
     protected function createTestListing(string $type, ?User $user = null, array $attributes = []): SteerListing|StudListing|GeneticsListing|ShowEquipmentListing
     {
         $user = $user ?? User::factory()->create();
-        
+
         switch ($type) {
             case 'steer':
                 return SteerListing::factory()->create(array_merge([
                     'user_id' => $user->id,
                 ], $attributes));
-                
+
             case 'stud':
                 return StudListing::factory()->create(array_merge([
                     'user_id' => $user->id,
                 ], $attributes));
-                
+
             case 'genetics':
                 return GeneticsListing::factory()->create(array_merge([
                     'user_id' => $user->id,
                 ], $attributes));
-                
+
             case 'equipment':
                 return ShowEquipmentListing::factory()->create(array_merge([
                     'user_id' => $user->id,
                 ], $attributes));
-                
+
             default:
                 throw new \InvalidArgumentException("Invalid listing type: {$type}");
         }
@@ -60,7 +60,7 @@ trait ListingTestHelpers
                     'location' => 'Brisbane, QLD',
                     'email_contact' => 'test@example.com',
                 ];
-                
+
             case 'stud':
                 return [
                     'name' => 'Test Stud',
@@ -71,7 +71,7 @@ trait ListingTestHelpers
                     'location' => 'Sydney, NSW',
                     'phone_contact' => '0412345678',
                 ];
-                
+
             case 'genetics':
                 return [
                     'type' => 'Semen Straws',
@@ -81,7 +81,7 @@ trait ListingTestHelpers
                     'storage_location' => 'QLD',
                     'email_contact' => 'genetics@example.com',
                 ];
-                
+
             case 'equipment':
                 return [
                     'title' => 'Test Equipment',
@@ -89,7 +89,7 @@ trait ListingTestHelpers
                     'location' => 'Melbourne, VIC',
                     'email_contact' => 'equipment@example.com',
                 ];
-                
+
             default:
                 throw new \InvalidArgumentException("Invalid listing type: {$type}");
         }
@@ -101,12 +101,12 @@ trait ListingTestHelpers
     protected function createListingWithPhotos(string $type, ?User $user = null, int $photoCount = 2): SteerListing|StudListing|GeneticsListing|ShowEquipmentListing
     {
         Storage::fake('public');
-        
+
         $photos = [];
         for ($i = 1; $i <= $photoCount; $i++) {
             $photos[] = "test-photos/photo{$i}.jpg";
         }
-        
+
         return $this->createTestListing($type, $user, ['photos' => $photos]);
     }
 
@@ -119,6 +119,7 @@ trait ListingTestHelpers
         for ($i = 1; $i <= $count; $i++) {
             $photos[] = UploadedFile::fake()->image("test{$i}.jpg");
         }
+
         return $photos;
     }
 
@@ -127,17 +128,17 @@ trait ListingTestHelpers
      */
     protected function assertListingCreated(string $type, User $user, array $expectedData = []): void
     {
-        $model = match($type) {
+        $model = match ($type) {
             'steer' => SteerListing::class,
             'stud' => StudListing::class,
             'genetics' => GeneticsListing::class,
             'equipment' => ShowEquipmentListing::class,
         };
-        
+
         $listing = $model::where('user_id', $user->id)->latest()->first();
-        
+
         $this->assertNotNull($listing, "Expected {$type} listing to be created");
-        
+
         foreach ($expectedData as $key => $value) {
             $this->assertEquals($value, $listing->{$key}, "Expected {$key} to be {$value}");
         }
@@ -148,7 +149,7 @@ trait ListingTestHelpers
      */
     protected function getListingCreateRoute(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'steer' => '/steers',
             'stud' => '/studs',
             'genetics' => '/genetics',
@@ -161,7 +162,7 @@ trait ListingTestHelpers
      */
     protected function getListingEditRoute(string $type, $listingId): string
     {
-        return match($type) {
+        return match ($type) {
             'steer' => "/steers/{$listingId}",
             'stud' => "/studs/{$listingId}",
             'genetics' => "/genetics/{$listingId}",

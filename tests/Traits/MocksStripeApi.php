@@ -15,20 +15,20 @@ trait MocksStripeApi
     protected function mockStripeCheckoutSession(array $attributes = []): Session
     {
         $session = $this->createMock(Session::class);
-        
+
         $defaultAttributes = [
-            'id' => 'cs_test_' . uniqid(),
+            'id' => 'cs_test_'.uniqid(),
             'payment_status' => 'paid',
-            'subscription' => 'sub_test_' . uniqid(),
-            'customer' => 'cus_test_' . uniqid(),
+            'subscription' => 'sub_test_'.uniqid(),
+            'customer' => 'cus_test_'.uniqid(),
         ];
-        
+
         $attributes = array_merge($defaultAttributes, $attributes);
-        
+
         foreach ($attributes as $property => $value) {
             $session->{$property} = $value;
         }
-        
+
         return $session;
     }
 
@@ -38,31 +38,31 @@ trait MocksStripeApi
     protected function mockStripeSubscription(array $attributes = []): Subscription
     {
         $subscription = $this->createMock(Subscription::class);
-        
+
         $defaultAttributes = [
-            'id' => 'sub_test_' . uniqid(),
+            'id' => 'sub_test_'.uniqid(),
             'status' => 'active',
-            'customer' => 'cus_test_' . uniqid(),
+            'customer' => 'cus_test_'.uniqid(),
             'items' => (object) [
                 'data' => [
                     (object) [
-                        'id' => 'si_test_' . uniqid(),
+                        'id' => 'si_test_'.uniqid(),
                         'price' => (object) [
-                            'id' => 'price_test_' . uniqid(),
-                            'product' => 'prod_test_' . uniqid(),
+                            'id' => 'price_test_'.uniqid(),
+                            'product' => 'prod_test_'.uniqid(),
                         ],
                         'quantity' => 1,
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
-        
+
         $attributes = array_merge($defaultAttributes, $attributes);
-        
+
         foreach ($attributes as $property => $value) {
             $subscription->{$property} = $value;
         }
-        
+
         return $subscription;
     }
 
@@ -72,8 +72,8 @@ trait MocksStripeApi
     protected function mockStripeCustomerCreation(?string $customerId = null): Customer
     {
         $customer = $this->createMock(Customer::class);
-        $customer->id = $customerId ?? 'cus_test_' . uniqid();
-        
+        $customer->id = $customerId ?? 'cus_test_'.uniqid();
+
         return $customer;
     }
 
@@ -108,15 +108,15 @@ trait MocksStripeApi
         // in the actual controllers to bypass Stripe calls during testing
         $this->app->bind(\Stripe\StripeClient::class, function () {
             $client = $this->createMock(\Stripe\StripeClient::class);
-            
+
             // Mock checkout sessions
             $checkoutSessions = $this->createMock(\Stripe\Service\Checkout\SessionService::class);
             $client->checkout = (object) ['sessions' => $checkoutSessions];
-            
+
             // Mock subscriptions
             $subscriptions = $this->createMock(\Stripe\Service\SubscriptionService::class);
             $client->subscriptions = $subscriptions;
-            
+
             return $client;
         });
     }

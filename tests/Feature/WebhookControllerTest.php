@@ -22,9 +22,9 @@ describe('Webhook Controller Steer Listing Updates', function () {
         ]);
 
         // Use reflection to test private method
-        $controller = new WebhookController();
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -33,19 +33,19 @@ describe('Webhook Controller Steer Listing Updates', function () {
         ];
 
         $method->invoke($controller, $subscription, 'active');
-        
+
         $steer->refresh();
         $this->assertEquals('active', $steer->status);
     });
 
     test('updates steer listing status based on stripe status mapping', function () {
         $user = User::factory()->create(['stripe_id' => 'cus_test123']);
-        
-        $controller = new WebhookController();
+
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $mapMethod = $reflection->getMethod('mapStripeStatusToSteerStatus');
+        $mapMethod = $reflection->getMethod('mapStripeStatusToListingStatus');
         $mapMethod->setAccessible(true);
-        $updateMethod = $reflection->getMethod('updateSteerListingFromSubscription');
+        $updateMethod = $reflection->getMethod('updateListingFromSubscription');
         $updateMethod->setAccessible(true);
 
         $statusTests = [
@@ -77,16 +77,16 @@ describe('Webhook Controller Steer Listing Updates', function () {
             ];
 
             $updateMethod->invoke($controller, $subscription, $stripeStatus);
-            
+
             $steer->refresh();
             $this->assertEquals($expectedStatus, $steer->status);
         }
     });
 
     test('handles missing steer listing gracefully', function () {
-        $controller = new WebhookController();
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -96,28 +96,28 @@ describe('Webhook Controller Steer Listing Updates', function () {
 
         // Should not throw exception
         $method->invoke($controller, $subscription, 'active');
-        
+
         $this->assertTrue(true); // If we get here, no exception was thrown
     });
 
     test('updates correct steer listing when user has multiple', function () {
         $user = User::factory()->create(['stripe_id' => 'cus_test123']);
-        
+
         $steer1 = SteerListing::factory()->create([
             'user_id' => $user->id,
             'status' => 'draft',
             'stripe_subscription_id' => 'sub_test1',
         ]);
-        
+
         $steer2 = SteerListing::factory()->create([
             'user_id' => $user->id,
             'status' => 'draft',
             'stripe_subscription_id' => 'sub_test2',
         ]);
 
-        $controller = new WebhookController();
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -126,10 +126,10 @@ describe('Webhook Controller Steer Listing Updates', function () {
         ];
 
         $method->invoke($controller, $subscription, 'active');
-        
+
         $steer1->refresh();
         $steer2->refresh();
-        
+
         // Only steer2 should be updated
         $this->assertEquals('draft', $steer1->status);
         $this->assertEquals('active', $steer2->status);
@@ -137,7 +137,7 @@ describe('Webhook Controller Steer Listing Updates', function () {
 });
 
 describe('Webhook Controller Stud Listing Support', function () {
-    test('webhook controller currently only handles steer listings', function () {
+    test('webhook controller now handles stud listings', function () {
         $user = User::factory()->create(['stripe_id' => 'cus_test123']);
         $stud = StudListing::factory()->create([
             'user_id' => $user->id,
@@ -145,9 +145,9 @@ describe('Webhook Controller Stud Listing Support', function () {
             'stripe_subscription_id' => 'sub_stud123',
         ]);
 
-        $controller = new WebhookController();
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -156,13 +156,9 @@ describe('Webhook Controller Stud Listing Support', function () {
         ];
 
         $method->invoke($controller, $subscription, 'active');
-        
+
         $stud->refresh();
-        // Stud listing should not be updated since controller only handles steers
-        $this->assertEquals('draft', $stud->status);
-        
-        // Verify no steer listing exists with this subscription
-        $steer = SteerListing::where('stripe_subscription_id', 'sub_stud123')->first();
-        $this->assertNull($steer);
+        // Stud listing should now be updated
+        $this->assertEquals('active', $stud->status);
     });
 });

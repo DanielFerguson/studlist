@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\SteerListing;
-use App\Models\StudListing;
-use App\Models\User;
 use Laravel\Cashier\Subscription;
 use Tests\Helpers\AssertionHelpers;
 use Tests\Helpers\WebhookTestHelpers;
@@ -271,28 +269,28 @@ describe('Webhook Error Handling', function () {
 
         // Process same webhook again (replay)
         $this->testWebhookHandler('updateSteerListingFromSubscription', $subscriptionData, 'canceled');
-        
+
         // Should still handle idempotently
         $this->assertListingIsCancelled($steer);
     });
 });
 
 describe('StudListing Webhook Support', function () {
-    test('webhooks do not affect stud listings', function () {
+    test('webhooks now update stud listings', function () {
         $user = $this->createUserWithStripeId();
         $stud = $this->createStudWithSubscription($user);
-        
+
         // Create webhook for a stud subscription
         $subscriptionData = $this->createSubscriptionWebhookData([
             'id' => $stud->stripe_subscription_id,
             'status' => 'canceled',
         ]);
 
-        // Webhook handler only processes steer listings
-        $this->testWebhookHandler('updateSteerListingFromSubscription', $subscriptionData, 'canceled');
-        
-        // Stud listing should remain unchanged
-        $this->assertListingIsActive($stud);
+        // Webhook handler now processes both steer and stud listings
+        $this->testWebhookHandler('updateListingFromSubscription', $subscriptionData, 'canceled');
+
+        // Stud listing should now be updated
+        $this->assertListingIsCancelled($stud);
     });
 });
 

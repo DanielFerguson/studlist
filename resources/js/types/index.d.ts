@@ -128,3 +128,20 @@ export interface ShowEquipmentListing {
     updated_at: string;
     deleted_at?: string | null;
 }
+
+export interface ServiceListing {
+    id: number;
+    user_id: number;
+    type: 'Photographer' | 'Fitter' | 'Feeder' | 'Other';
+    abn?: string | null;
+    business_name: string;
+    contact_name: string;
+    phone_contact?: string | null;
+    email_contact?: string | null;
+    locations_covered: ('ACT' | 'NSW' | 'NT' | 'QLD' | 'SA' | 'TAS' | 'VIC' | 'WA')[];
+    links?: string[] | null;
+    description?: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}

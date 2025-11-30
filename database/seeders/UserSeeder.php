@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
             'email' => 'premium@example.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
-            'stripe_id' => 'cus_test_' . uniqid(),
+            'stripe_id' => 'cus_test_'.uniqid(),
         ]);
 
         // Create users with different verification states
@@ -67,7 +67,7 @@ class UserSeeder extends Seeder
         $bulkUsers = User::factory(20)->create()->each(function ($user, $index) {
             // 30% of users have Stripe customer IDs
             if ($index % 3 === 0) {
-                $user->update(['stripe_id' => 'cus_test_' . uniqid()]);
+                $user->update(['stripe_id' => 'cus_test_'.uniqid()]);
             }
 
             // 20% of users are unverified
@@ -80,8 +80,8 @@ class UserSeeder extends Seeder
         $states = ['NSW', 'QLD', 'VIC', 'SA', 'WA', 'TAS', 'NT', 'ACT'];
         foreach ($states as $state) {
             User::factory()->create([
-                'name' => fake()->name() . " from $state",
-                'email' => strtolower($state) . '@example.com',
+                'name' => fake()->name()." from $state",
+                'email' => strtolower($state).'@example.com',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]);
@@ -89,13 +89,13 @@ class UserSeeder extends Seeder
 
         // Create some users with active subscriptions (mock data)
         $subscribedUsers = User::factory(3)->create([
-            'stripe_id' => fn() => 'cus_test_' . uniqid(),
+            'stripe_id' => fn () => 'cus_test_'.uniqid(),
         ])->each(function ($user) {
             // Create mock subscription records
             Subscription::create([
                 'user_id' => $user->id,
                 'type' => 'default',
-                'stripe_id' => 'sub_test_' . uniqid(),
+                'stripe_id' => 'sub_test_'.uniqid(),
                 'stripe_status' => 'active',
                 'stripe_price' => config('cashier.steer_listing_price_id', 'price_test'),
                 'quantity' => 1,
@@ -106,12 +106,12 @@ class UserSeeder extends Seeder
             ]);
         });
 
-        $this->command->info('Created ' . User::count() . ' users including:');
-        $this->command->info('- ' . User::where('is_admin', true)->count() . ' admin users');
-        $this->command->info('- ' . User::whereNotNull('stripe_id')->count() . ' users with Stripe customer IDs');
-        $this->command->info('- ' . User::whereNull('email_verified_at')->count() . ' unverified users');
-        $this->command->info('- ' . Subscription::count() . ' active subscriptions');
-        
+        $this->command->info('Created '.User::count().' users including:');
+        $this->command->info('- '.User::where('is_admin', true)->count().' admin users');
+        $this->command->info('- '.User::whereNotNull('stripe_id')->count().' users with Stripe customer IDs');
+        $this->command->info('- '.User::whereNull('email_verified_at')->count().' unverified users');
+        $this->command->info('- '.Subscription::count().' active subscriptions');
+
         $this->command->info('');
         $this->command->info('Test credentials:');
         $this->command->info('Admin: admin@studlist.com / password');

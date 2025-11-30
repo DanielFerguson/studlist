@@ -80,7 +80,7 @@ class SteerListingController extends Controller
     {
         // Only show active listings publicly
         abort_if($steer->status !== 'active', 404);
-        
+
         return Inertia::render('steers/show', [
             'listing' => $steer->load('user'),
         ]);

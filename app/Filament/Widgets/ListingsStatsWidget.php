@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\GeneticsListing;
+use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
@@ -39,6 +40,11 @@ class ListingsStatsWidget extends BaseWidget
                 ->description('Equipment listings')
                 ->descriptionIcon('heroicon-m-wrench-screwdriver')
                 ->color('gray'),
+
+            Stat::make('Services', ServiceListing::count())
+                ->description('Service providers')
+                ->descriptionIcon('heroicon-m-briefcase')
+                ->color('info'),
 
             Stat::make('Active Subscriptions',
                 SteerListing::where('status', 'active')->count() +

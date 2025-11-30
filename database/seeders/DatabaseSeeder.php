@@ -34,11 +34,11 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Database seeding completed successfully!');
         $this->command->info('');
         $this->command->info('Summary:');
-        $this->command->info('- Users: ' . \App\Models\User::count());
-        $this->command->info('- Steer Listings: ' . \App\Models\SteerListing::count());
-        $this->command->info('- Stud Listings: ' . \App\Models\StudListing::count());
-        $this->command->info('- Genetics Listings: ' . \App\Models\GeneticsListing::count());
-        $this->command->info('- Show Equipment Listings: ' . \App\Models\ShowEquipmentListing::count());
+        $this->command->info('- Users: '.\App\Models\User::count());
+        $this->command->info('- Steer Listings: '.\App\Models\SteerListing::count());
+        $this->command->info('- Stud Listings: '.\App\Models\StudListing::count());
+        $this->command->info('- Genetics Listings: '.\App\Models\GeneticsListing::count());
+        $this->command->info('- Show Equipment Listings: '.\App\Models\ShowEquipmentListing::count());
         $this->command->info('');
         $this->command->info('You can log in with:');
         $this->command->info('Admin: admin@studlist.com / password');

@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\GeneticsListing;
+use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
 use App\Policies\GeneticsListingPolicy;
+use App\Policies\ServiceListingPolicy;
 use App\Policies\ShowEquipmentListingPolicy;
 use App\Policies\SteerListingPolicy;
 use App\Policies\StudListingPolicy;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         StudListing::class => StudListingPolicy::class,
         GeneticsListing::class => GeneticsListingPolicy::class,
         ShowEquipmentListing::class => ShowEquipmentListingPolicy::class,
+        ServiceListing::class => ServiceListingPolicy::class,
     ];
 
     /**

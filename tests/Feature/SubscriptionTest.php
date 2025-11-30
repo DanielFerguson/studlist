@@ -3,7 +3,6 @@
 use App\Models\SteerListing;
 use App\Models\StudListing;
 use App\Models\User;
-use Laravel\Cashier\Subscription;
 use Tests\Helpers\AssertionHelpers;
 use Tests\Traits\CreatesTestData;
 use Tests\Traits\MocksStripeApi;
@@ -29,7 +28,7 @@ describe('Subscription Checkout', function () {
 
         $response = $this->actingAs($otherUser)
             ->post("/subscriptions/checkout/{$steer->id}");
-            
+
         $response->assertForbidden();
     });
 
@@ -39,7 +38,7 @@ describe('Subscription Checkout', function () {
 
         $response = $this->actingAs($user)
             ->post("/subscriptions/checkout/{$activeSteer->id}");
-            
+
         $this->assertRedirectWithError($response, 'This listing already has an active subscription.');
     });
 
@@ -61,7 +60,7 @@ describe('Subscription Success Handling', function () {
 
         $response = $this->actingAs($user)
             ->get("/subscriptions/success/{$steer->id}");
-            
+
         $this->assertRedirectWithError($response, 'Invalid checkout session.');
     });
 });
@@ -81,7 +80,7 @@ describe('Subscription Cancellation', function () {
 
         $response = $this->actingAs($otherUser)
             ->post("/subscriptions/cancel/{$steer->id}");
-            
+
         $response->assertForbidden();
     });
 
@@ -94,7 +93,7 @@ describe('Subscription Cancellation', function () {
 
         $response = $this->actingAs($user)
             ->post("/subscriptions/cancel/{$steer->id}");
-            
+
         $this->assertRedirectWithError($response, 'No active subscription found for this listing.');
     });
 
@@ -121,7 +120,7 @@ describe('Billing Portal', function () {
 
         $response = $this->actingAs($user)
             ->get('/subscriptions/billing-portal');
-            
+
         $this->assertRedirectWithError($response, 'No billing information found.');
     });
 
@@ -153,7 +152,7 @@ describe('Stud Subscription Checkout', function () {
 
         $response = $this->actingAs($user)
             ->post("/subscriptions/checkout-stud/{$stud->id}");
-            
+
         $this->assertRedirectWithError($response, 'This listing already has an active subscription.');
     });
 
@@ -189,7 +188,7 @@ describe('Stud Subscription Cancellation', function () {
 
         $response = $this->actingAs($user)
             ->post("/subscriptions/cancel-stud/{$stud->id}");
-            
+
         $this->assertRedirectWithError($response, 'No active subscription found for this listing.');
     });
 });

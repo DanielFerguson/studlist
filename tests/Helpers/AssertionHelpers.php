@@ -46,11 +46,11 @@ trait AssertionHelpers
     {
         $type = $listing instanceof SteerListing ? 'steer' : 'stud';
         $subscriptionType = "{$type}_{$listing->id}";
-        
+
         $subscription = $user->subscriptions()
             ->where('type', $subscriptionType)
             ->first();
-            
+
         Assert::assertNotNull($subscription, "Expected subscription of type {$subscriptionType} to exist for user {$user->id}");
     }
 

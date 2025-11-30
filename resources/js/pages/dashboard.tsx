@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { SteerListing, StudListing, GeneticsListing, ShowEquipmentListing, type BreadcrumbItem } from '@/types';
+import { SteerListing, StudListing, GeneticsListing, ShowEquipmentListing, ServiceListing, type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Card,
@@ -44,6 +44,7 @@ interface DashboardProps {
     studListings: StudListing[];
     geneticsListings: GeneticsListing[];
     showEquipmentListings: ShowEquipmentListing[];
+    serviceListings: ServiceListing[];
 }
 
 function getStatusBadge(status: SteerListing['status'] | StudListing['status'] | GeneticsListing['status']) {
@@ -59,13 +60,14 @@ function getStatusBadge(status: SteerListing['status'] | StudListing['status'] |
     }
 }
 
-export default function Dashboard({ steerListings, studListings, geneticsListings, showEquipmentListings }: DashboardProps) {
+export default function Dashboard({ steerListings, studListings, geneticsListings, showEquipmentListings, serviceListings }: DashboardProps) {
     const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
 
     const [selectedSteerIdDelete, setSelectedSteerIdDelete] = useState<number | null>(null);
     const [selectedStudIdDelete, setSelectedStudIdDelete] = useState<number | null>(null);
     const [selectedGeneticsIdDelete, setSelectedGeneticsIdDelete] = useState<number | null>(null);
     const [selectedShowEquipmentIdDelete, setSelectedShowEquipmentIdDelete] = useState<number | null>(null);
+    const [selectedServiceIdDelete, setSelectedServiceIdDelete] = useState<number | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -136,6 +138,22 @@ export default function Dashboard({ steerListings, studListings, geneticsListing
             onFinish: () => {
                 // This runs regardless of success or error
                 setSelectedShowEquipmentIdDelete(null);
+            }
+        });
+    }
+
+    const handleDeleteService = (serviceId: number) => {
+        router.delete(`/services/${serviceId}`, {
+            onSuccess: () => {
+                setSelectedServiceIdDelete(null);
+            },
+            onError: (errors) => {
+                console.error('Delete error:', errors);
+                setSelectedServiceIdDelete(null);
+            },
+            onFinish: () => {
+                // This runs regardless of success or error
+                setSelectedServiceIdDelete(null);
             }
         });
     }
@@ -500,6 +518,78 @@ export default function Dashboard({ steerListings, studListings, geneticsListing
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Services Listings table */}
+                <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70">
+                    <Card className="shadow-none border-none">
+                        <CardHeader>
+                            <CardTitle>Services</CardTitle>
+                            <CardDescription>
+                                These are your service listings. Service listings are free to post.
+                            </CardDescription>
+                            <CardAction className="flex gap-2">
+                                <Link href={route('services.create')}>
+                                    <Button size="sm">
+                                        <PlusIcon />
+                                        List Service
+                                    </Button>
+                                </Link>
+                            </CardAction>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Business Name</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Locations</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {serviceListings.map((item) => (
+                                        <TableRow key={item.id}>
+                                            <TableCell className="font-medium">
+                                                <Link href={route('services.edit', item.id)} className='hover:underline'>
+                                                    {item.business_name}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.type}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.locations_covered.join(', ')}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2 flex-wrap">
+                                                    <Link href={route('services.edit', item.id)}>
+                                                        <Button size="sm" variant="outline">
+                                                            <PencilIcon />
+                                                            Edit
+                                                        </Button>
+                                                    </Link>
+
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => setSelectedServiceIdDelete(item.id)}
+                                                    >
+                                                        <TrashIcon />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                {serviceListings.length === 0 && (
+                                    <TableCaption>
+                                        No service listings found.
+                                    </TableCaption>
+                                )}
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             <Dialog open={selectedSteerIdDelete !== null} onOpenChange={() => setSelectedSteerIdDelete(null)}>
@@ -561,6 +651,22 @@ export default function Dashboard({ steerListings, studListings, geneticsListing
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setSelectedShowEquipmentIdDelete(null)}>Cancel</Button>
                             <Button variant="destructive" onClick={() => handleDeleteShowEquipment(selectedShowEquipmentIdDelete!)}>Delete</Button>
+                        </DialogFooter>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={selectedServiceIdDelete !== null} onOpenChange={() => setSelectedServiceIdDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete the service listing
+                            and remove it from our servers. It will also remove it from the public listings.
+                        </DialogDescription>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setSelectedServiceIdDelete(null)}>Cancel</Button>
+                            <Button variant="destructive" onClick={() => handleDeleteService(selectedServiceIdDelete!)}>Delete</Button>
                         </DialogFooter>
                     </DialogHeader>
                 </DialogContent>

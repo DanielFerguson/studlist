@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\GeneticsListingController;
+use App\Http\Controllers\ServiceListingController;
 use App\Http\Controllers\ShowEquipmentListingController;
 use App\Http\Controllers\SteerListingController;
 use App\Http\Controllers\StudListingController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use App\Models\GeneticsListing;
+use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
@@ -26,14 +28,13 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    $geneticsListings = GeneticsListing::where('status', 'active')
-        ->with('user')
+    // Genetics and Show Equipment listings are free - no status filter needed
+    $geneticsListings = GeneticsListing::with('user')
         ->latest()
         ->take(4)
         ->get();
 
-    $showEquipmentListings = ShowEquipmentListing::where('status', 'active')
-        ->with('user')
+    $showEquipmentListings = ShowEquipmentListing::with('user')
         ->latest()
         ->take(4)
         ->get();
@@ -87,11 +88,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()
             ->get();
 
+        $serviceListings = ServiceListing::where('user_id', auth()->user()->id)
+            ->latest()
+            ->get();
+
         return Inertia::render('dashboard', [
             'steerListings' => $steerListings,
             'studListings' => $studListings,
             'geneticsListings' => $geneticsListings,
             'showEquipmentListings' => $showEquipmentListings,
+            'serviceListings' => $serviceListings,
         ]);
     })->name('dashboard');
 
@@ -99,6 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('studs', StudListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('genetics', GeneticsListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('show-equipment', ShowEquipmentListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('services', ServiceListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
     // Subscription routes
     Route::prefix('subscriptions')->name('subscription.')->group(function () {
@@ -127,6 +134,7 @@ Route::get('/steers/{steer}', [SteerListingController::class, 'show'])->name('st
 Route::get('/studs/{stud}', [StudListingController::class, 'show'])->name('studs.show');
 Route::get('/genetics/{genetic}', [GeneticsListingController::class, 'show'])->name('genetics.show');
 Route::get('/equipment/{equipment}', [ShowEquipmentListingController::class, 'show'])->name('equipment.show');
+Route::get('/services/{service}', [ServiceListingController::class, 'show'])->name('services.show');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

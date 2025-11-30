@@ -33,12 +33,12 @@ describe('Steer Listing Photo Uploads', function () {
 
         $response = $this->actingAs($user)
             ->post('/steers', $steerData);
-        
+
         // Check for validation errors
         if ($response->status() === 302 && session()->has('errors')) {
-            $this->fail('Validation failed: ' . implode(', ', session('errors')->all()));
+            $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
-        
+
         // Steers should be created and redirect to checkout
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
@@ -102,12 +102,12 @@ describe('Steer Listing Photo Uploads', function () {
 
         $response = $this->actingAs($user)
             ->post('/steers', $steerData);
-        
+
         // Check for validation errors
         if ($response->status() === 302 && session()->has('errors')) {
-            $this->fail('Validation failed: ' . implode(', ', session('errors')->all()));
+            $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
-        
+
         // Steers should be created and redirect to checkout
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
@@ -130,12 +130,12 @@ describe('Steer Listing Photo Uploads', function () {
 
         $response = $this->actingAs($user)
             ->post('/steers', $steerData);
-        
+
         // Check for validation errors
         if ($response->status() === 302 && session()->has('errors')) {
-            $this->fail('Validation failed: ' . implode(', ', session('errors')->all()));
+            $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
-        
+
         // Steers should be created and redirect to checkout
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
@@ -171,7 +171,7 @@ describe('Stud Listing Photo Uploads', function () {
 
         $response = $this->actingAs($user)
             ->post('/studs', $studData);
-            
+
         // Studs should be created and redirect to checkout
         $stud = StudListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($stud);
@@ -418,7 +418,7 @@ describe('File Storage Organization', function () {
                 ->assertRedirect();
 
             // Get the created listing
-            $modelClass = match($route) {
+            $modelClass = match ($route) {
                 'steers' => SteerListing::class,
                 'studs' => StudListing::class,
                 'genetics' => GeneticsListing::class,
@@ -427,7 +427,7 @@ describe('File Storage Organization', function () {
 
             $listing = $modelClass::where('user_id', $user->id)->latest()->first();
             $this->assertNotEmpty($listing->photos);
-            
+
             // Verify correct directory
             foreach ($listing->photos as $photo) {
                 $this->assertStringStartsWith($config['directory'], $photo);

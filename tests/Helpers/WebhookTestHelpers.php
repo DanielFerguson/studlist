@@ -16,7 +16,7 @@ trait WebhookTestHelpers
     protected function createWebhookEvent(string $type, array $data = []): array
     {
         return [
-            'id' => 'evt_' . uniqid(),
+            'id' => 'evt_'.uniqid(),
             'object' => 'event',
             'type' => $type,
             'created' => time(),
@@ -40,14 +40,14 @@ trait WebhookTestHelpers
         $payload = json_encode($event);
         $timestamp = time();
         $secret = config('cashier.webhook.secret');
-        
+
         // Generate signature
         $signedPayload = "{$timestamp}.{$payload}";
         $signature = hash_hmac('sha256', $signedPayload, $secret);
-        
+
         $request = Request::create('/stripe/webhook', 'POST', [], [], [], [], $payload);
         $request->headers->set('Stripe-Signature', "t={$timestamp},v1={$signature}");
-        
+
         return $request;
     }
 
@@ -56,11 +56,19 @@ trait WebhookTestHelpers
      */
     protected function testWebhookHandler(string $method, array $data, ?string $status = null): void
     {
-        $controller = new WebhookController();
+        $controller = new WebhookController;
         $reflection = new \ReflectionClass($controller);
-        $handlerMethod = $reflection->getMethod($method);
+
+        // Map old method names to new ones for backwards compatibility
+        $methodMapping = [
+            'updateSteerListingFromSubscription' => 'updateListingFromSubscription',
+            'mapStripeStatusToSteerStatus' => 'mapStripeStatusToListingStatus',
+        ];
+
+        $actualMethod = $methodMapping[$method] ?? $method;
+        $handlerMethod = $reflection->getMethod($actualMethod);
         $handlerMethod->setAccessible(true);
-        
+
         if ($status !== null) {
             $handlerMethod->invoke($controller, $data, $status);
         } else {
@@ -74,30 +82,30 @@ trait WebhookTestHelpers
     protected function createSubscriptionWebhookData(array $attributes = []): array
     {
         $defaults = [
-            'id' => 'sub_' . uniqid(),
+            'id' => 'sub_'.uniqid(),
             'object' => 'subscription',
             'status' => 'active',
-            'customer' => 'cus_' . uniqid(),
+            'customer' => 'cus_'.uniqid(),
             'items' => [
                 'object' => 'list',
                 'data' => [
                     [
-                        'id' => 'si_' . uniqid(),
+                        'id' => 'si_'.uniqid(),
                         'object' => 'subscription_item',
                         'price' => [
-                            'id' => 'price_' . uniqid(),
+                            'id' => 'price_'.uniqid(),
                             'object' => 'price',
-                            'product' => 'prod_' . uniqid(),
+                            'product' => 'prod_'.uniqid(),
                         ],
                         'quantity' => 1,
-                    ]
+                    ],
                 ],
             ],
             'created' => time(),
             'current_period_start' => time(),
             'current_period_end' => time() + 2592000, // 30 days
         ];
-        
+
         return array_merge($defaults, $attributes);
     }
 
@@ -107,17 +115,17 @@ trait WebhookTestHelpers
     protected function createCheckoutSessionWebhookData(array $attributes = []): array
     {
         $defaults = [
-            'id' => 'cs_' . uniqid(),
+            'id' => 'cs_'.uniqid(),
             'object' => 'checkout.session',
             'payment_status' => 'paid',
             'status' => 'complete',
-            'subscription' => 'sub_' . uniqid(),
-            'customer' => 'cus_' . uniqid(),
+            'subscription' => 'sub_'.uniqid(),
+            'customer' => 'cus_'.uniqid(),
             'mode' => 'subscription',
             'success_url' => 'https://example.com/success',
             'cancel_url' => 'https://example.com/cancel',
         ];
-        
+
         return array_merge($defaults, $attributes);
     }
 
@@ -129,16 +137,16 @@ trait WebhookTestHelpers
         Log::shouldReceive('info')
             ->once()
             ->withArgs(function ($message, $context) use ($type, $expectedContext) {
-                if (!str_contains($message, $type)) {
+                if (! str_contains($message, $type)) {
                     return false;
                 }
-                
+
                 foreach ($expectedContext as $key => $value) {
-                    if (!isset($context[$key]) || $context[$key] !== $value) {
+                    if (! isset($context[$key]) || $context[$key] !== $value) {
                         return false;
                     }
                 }
-                
+
                 return true;
             });
     }
@@ -151,16 +159,16 @@ trait WebhookTestHelpers
         Log::shouldReceive('error')
             ->once()
             ->withArgs(function ($message, $context) use ($errorMessage, $expectedContext) {
-                if (!str_contains($message, $errorMessage)) {
+                if (! str_contains($message, $errorMessage)) {
                     return false;
                 }
-                
+
                 foreach ($expectedContext as $key => $value) {
-                    if (!isset($context[$key]) || $context[$key] !== $value) {
+                    if (! isset($context[$key]) || $context[$key] !== $value) {
                         return false;
                     }
                 }
-                
+
                 return true;
             });
     }
@@ -173,16 +181,16 @@ trait WebhookTestHelpers
         Log::shouldReceive('warning')
             ->once()
             ->withArgs(function ($message, $context) use ($warningMessage, $expectedContext) {
-                if (!str_contains($message, $warningMessage)) {
+                if (! str_contains($message, $warningMessage)) {
                     return false;
                 }
-                
+
                 foreach ($expectedContext as $key => $value) {
-                    if (!isset($context[$key]) || $context[$key] !== $value) {
+                    if (! isset($context[$key]) || $context[$key] !== $value) {
                         return false;
                     }
                 }
-                
+
                 return true;
             });
     }
@@ -193,17 +201,17 @@ trait WebhookTestHelpers
     protected function createInvoiceWebhookData(array $attributes = []): array
     {
         $defaults = [
-            'id' => 'in_' . uniqid(),
+            'id' => 'in_'.uniqid(),
             'object' => 'invoice',
             'status' => 'paid',
-            'customer' => 'cus_' . uniqid(),
-            'subscription' => 'sub_' . uniqid(),
+            'customer' => 'cus_'.uniqid(),
+            'subscription' => 'sub_'.uniqid(),
             'amount_paid' => 1500,
             'amount_due' => 0,
             'currency' => 'aud',
             'paid' => true,
         ];
-        
+
         return array_merge($defaults, $attributes);
     }
 
@@ -213,15 +221,15 @@ trait WebhookTestHelpers
     protected function createPaymentIntentWebhookData(array $attributes = []): array
     {
         $defaults = [
-            'id' => 'pi_' . uniqid(),
+            'id' => 'pi_'.uniqid(),
             'object' => 'payment_intent',
             'status' => 'succeeded',
             'amount' => 1500,
             'currency' => 'aud',
-            'customer' => 'cus_' . uniqid(),
-            'payment_method' => 'pm_' . uniqid(),
+            'customer' => 'cus_'.uniqid(),
+            'payment_method' => 'pm_'.uniqid(),
         ];
-        
+
         return array_merge($defaults, $attributes);
     }
 }

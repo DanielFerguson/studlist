@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\SteerListing;
-use App\Models\StudListing;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Subscription;
@@ -84,24 +83,24 @@ describe('Race Conditions', function () {
         // Second request should be rejected
         $response2 = $this->actingAs($user)
             ->post("/subscriptions/checkout/{$steer->id}");
-        
+
         $this->assertRedirectWithError($response2, 'This listing already has an active subscription.');
     });
 
     test('handles webhook processed before success callback', function () {
         $user = $this->createUserWithStripeId();
         $steer = SteerListing::factory()->draft()->create(['user_id' => $user->id]);
-        
+
         // Simulate webhook already processed
         $subscription = Subscription::create([
             'user_id' => $user->id,
-            'type' => 'steer_' . $steer->id,
+            'type' => 'steer_'.$steer->id,
             'stripe_id' => 'sub_test_123',
             'stripe_status' => 'active',
             'stripe_price' => 'price_test',
             'quantity' => 1,
         ]);
-        
+
         $steer->update([
             'status' => 'active',
             'stripe_subscription_id' => 'sub_test_123',
@@ -109,7 +108,7 @@ describe('Race Conditions', function () {
 
         // Success callback should handle existing subscription
         \Stripe\Stripe::setApiKey('sk_test_fake');
-        
+
         // In test environment, session retrieval is bypassed
 
         // This would normally update the existing subscription
@@ -146,7 +145,7 @@ describe('Data Integrity Issues', function () {
 
     test('handles orphaned subscriptions', function () {
         $user = $this->createUserWithStripeId();
-        
+
         // Create orphaned subscription (no associated listing)
         $subscription = Subscription::create([
             'user_id' => $user->id,
@@ -159,7 +158,7 @@ describe('Data Integrity Issues', function () {
 
         // Should not affect other operations
         $steer = SteerListing::factory()->draft()->create(['user_id' => $user->id]);
-        
+
         $response = $this->actingAs($user)
             ->post("/subscriptions/checkout/{$steer->id}");
 
@@ -178,7 +177,7 @@ describe('Data Integrity Issues', function () {
         // Create subscription with different ID
         Subscription::create([
             'user_id' => $user->id,
-            'type' => 'steer_' . $steer->id,
+            'type' => 'steer_'.$steer->id,
             'stripe_id' => 'sub_different',
             'stripe_status' => 'active',
             'stripe_price' => 'price_test',
@@ -247,7 +246,7 @@ describe('Subscription State Transitions', function () {
         // Create past_due subscription
         $subscription = Subscription::create([
             'user_id' => $user->id,
-            'type' => 'steer_' . $steer->id,
+            'type' => 'steer_'.$steer->id,
             'stripe_id' => 'sub_past_due',
             'stripe_status' => 'past_due',
             'stripe_price' => 'price_test',
@@ -327,7 +326,7 @@ describe('Edge Cases', function () {
         // Create subscription without items
         $subscription = Subscription::create([
             'user_id' => $user->id,
-            'type' => 'steer_' . $steer->id,
+            'type' => 'steer_'.$steer->id,
             'stripe_id' => 'sub_no_items',
             'stripe_status' => 'active',
             'stripe_price' => 'price_test',
@@ -351,7 +350,7 @@ describe('Edge Cases', function () {
 describe('Cross-listing Type Issues', function () {
     test('handles steer and stud subscriptions independently', function () {
         $user = $this->createUserWithStripeId();
-        
+
         // Create both types of listings
         $steer = $this->createSteerWithSubscription($user);
         $stud = $this->createStudWithSubscription($user);
@@ -371,7 +370,7 @@ describe('Cross-listing Type Issues', function () {
     test('prevents cross-user subscription access', function () {
         $owner = $this->createUserWithStripeId();
         $attacker = $this->createUserWithStripeId();
-        
+
         $steer = $this->createSteerWithSubscription($owner);
 
         // Attacker tries to cancel owner's subscription
@@ -389,9 +388,9 @@ describe('Webhook Edge Cases', function () {
         $steer = SteerListing::factory()->draft()->create(['user_id' => $user->id]);
 
         // Process webhook twice
-        $webhookController = new \App\Http\Controllers\WebhookController();
+        $webhookController = new \App\Http\Controllers\WebhookController;
         $reflection = new \ReflectionClass($webhookController);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -402,10 +401,10 @@ describe('Webhook Edge Cases', function () {
         // First processing - the steer doesn't have this subscription ID yet
         $method->invoke($webhookController, $subscription, 'active');
         $steer->refresh();
-        
+
         // Update the steer to have the subscription ID for second test
         $steer->update(['stripe_subscription_id' => 'sub_test_123']);
-        
+
         // Duplicate processing should be idempotent
         $method->invoke($webhookController, $subscription, 'active');
         $steer->refresh();
@@ -413,13 +412,9 @@ describe('Webhook Edge Cases', function () {
     });
 
     test('handles webhooks for non-existent subscriptions', function () {
-        Log::shouldReceive('warning')
-            ->once()
-            ->with('Steer listing not found for subscription', ['subscription_id' => 'sub_ghost']);
-
-        $webhookController = new \App\Http\Controllers\WebhookController();
+        $webhookController = new \App\Http\Controllers\WebhookController;
         $reflection = new \ReflectionClass($webhookController);
-        $method = $reflection->getMethod('updateSteerListingFromSubscription');
+        $method = $reflection->getMethod('updateListingFromSubscription');
         $method->setAccessible(true);
 
         $subscription = [
@@ -427,9 +422,9 @@ describe('Webhook Edge Cases', function () {
             'status' => 'active',
         ];
 
-        // Should not throw exception
+        // Should not throw exception (no logging expectation since it doesn't warn for missing listings anymore)
         $method->invoke($webhookController, $subscription, 'active');
-        
+
         $this->assertTrue(true); // No exception thrown
     });
 });

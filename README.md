@@ -4,7 +4,9 @@ StudList is a website that will allow users to put up ads for cattle, genetics (
 
 Users can do this through...
 1. creating the listing (creating a record(s) in the database)
-2. paying for the listing (subscribe to a recurring fee of $25 through Stripe and Laravel Cashier to keep the listing live)
+2. paying for the listing (subscribe to a recurring fee of $15 through Stripe and Laravel Cashier to keep the listing live)
+
+Note: Genetics, Show Equipment, and Services listings are free to post.
 
 The user doesn't need to pay for the listing when they create it, but it won't show until they do.
 
@@ -101,18 +103,15 @@ The user can cancel the listing at any point, which will cancel the subscription
 
 ## Features
 
-### Critcal
+### Critical
 
 - [x] Setup Steer listings
 - [x] Setup Stud listings
-- [ ] Setup Genetics listings
-- [ ] Setup Show Equipment listings
-- [ ] Setup Services listings
-- [ ] Setup Filament admin panel
-
-### Later
-
-- [ ] Setup Stripe webhook
+- [x] Setup Genetics listings (free)
+- [x] Setup Show Equipment listings (free)
+- [x] Setup Services listings (free)
+- [x] Setup Filament admin panel
+- [x] Setup Stripe webhook (for both Steer and Stud listings)
 
 ### Nice to have
 

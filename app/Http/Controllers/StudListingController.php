@@ -78,7 +78,7 @@ class StudListingController extends Controller
     {
         // Only show active listings publicly
         abort_if($stud->status !== 'active', 404);
-        
+
         return Inertia::render('studs/show', [
             'listing' => $stud->load('user'),
         ]);

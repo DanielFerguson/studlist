@@ -204,14 +204,16 @@ Key variables to configure:
 - Steer listings (CRUD + subscriptions)
 - Stud listings (CRUD + subscriptions)
 - Stripe payment integration
+- Stripe webhooks (for both Steer and Stud listings)
 - Basic dashboard
-- Genetics listings
-- Show equipment listings
+- Genetics listings (free)
+- Show equipment listings (free)
 - Services listings (free)
 - Admin panel with Filament
 
 🚧 Planned:
 - Pageview tracking
+- Prefill forms with user's profile data
 
 ## Coding Standards
 

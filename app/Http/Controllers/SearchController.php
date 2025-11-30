@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GeneticsListing;
+use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
@@ -34,7 +35,7 @@ class SearchController extends Controller
 
         // If no categories selected, default to all
         if (empty($categories)) {
-            $categories = ['steers', 'studs', 'genetics', 'equipment'];
+            $categories = ['steers', 'studs', 'genetics', 'equipment', 'services'];
         }
 
         $allListings = collect();
@@ -71,6 +72,7 @@ class SearchController extends Controller
             $steers = $steersQuery->get()->map(function ($steer) {
                 $steer->listing_type = 'steer';
                 $steer->listing_url = route('steers.show', $steer);
+
                 return $steer;
             });
 
@@ -100,6 +102,7 @@ class SearchController extends Controller
             $studs = $studsQuery->get()->map(function ($stud) {
                 $stud->listing_type = 'stud';
                 $stud->listing_url = route('studs.show', $stud);
+
                 return $stud;
             });
 
@@ -132,6 +135,7 @@ class SearchController extends Controller
             $genetics = $geneticsQuery->get()->map(function ($genetic) {
                 $genetic->listing_type = 'genetics';
                 $genetic->listing_url = route('genetics.show', $genetic);
+
                 return $genetic;
             });
 
@@ -156,10 +160,38 @@ class SearchController extends Controller
                 $item->listing_type = 'equipment';
                 $item->listing_url = route('equipment.show', $item);
                 $item->name = $item->title; // Normalize field name
+
                 return $item;
             });
 
             $allListings = $allListings->concat($equipment);
+        }
+
+        if (in_array('services', $categories)) {
+            $servicesQuery = ServiceListing::with('user');
+
+            if ($search) {
+                $servicesQuery->where(function ($q) use ($search) {
+                    $q->where('business_name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('type', 'like', "%{$search}%");
+                });
+            }
+
+            if ($location) {
+                // Search in the locations_covered JSON array
+                $servicesQuery->whereJsonContains('locations_covered', $location);
+            }
+
+            $services = $servicesQuery->get()->map(function ($service) {
+                $service->listing_type = 'service';
+                $service->listing_url = route('services.show', $service);
+                $service->name = $service->business_name; // Normalize field name
+
+                return $service;
+            });
+
+            $allListings = $allListings->concat($services);
         }
 
         // Sort the combined results
