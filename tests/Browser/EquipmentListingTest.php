@@ -39,7 +39,7 @@ describe('Show Equipment Listing Creation', function () {
             ->fill('email_contact', 'equipment@example.com')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('show_equipment_listings', [
             'user_id' => $user->id,
@@ -67,7 +67,7 @@ describe('Show Equipment Listing Creation', function () {
             ->fill('description', 'Includes brushes, combs, and show supplies. Great for beginners.')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('show_equipment_listings', [
             'user_id' => $user->id,
@@ -117,7 +117,7 @@ describe('Show Equipment Listing Editing', function () {
             ->select('condition', 'Good')
             ->click('Update Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('show_equipment_listings', [
             'id' => $equipment->id,

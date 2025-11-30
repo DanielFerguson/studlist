@@ -39,7 +39,7 @@ describe('Service Listing Creation', function () {
             ->fill('email_contact', 'clipping@example.com')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('service_listings', [
             'user_id' => $user->id,
@@ -68,7 +68,7 @@ describe('Service Listing Creation', function () {
             ->fill('description', 'Professional show training with 20+ years experience. All breeds welcome.')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('service_listings', [
             'user_id' => $user->id,
@@ -119,7 +119,7 @@ describe('Service Listing Editing', function () {
             ->select('service_type', 'Training')
             ->click('Update Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('service_listings', [
             'id' => $service->id,

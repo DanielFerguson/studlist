@@ -11,7 +11,7 @@ describe('Dashboard Access', function () {
     it('requires authentication to access dashboard', function () {
         $page = $this->visit('/dashboard');
 
-        $page->assertUrlIs('/login');
+        $page->assertPathIs('/login');
     });
 
     it('authenticated users can access dashboard', function () {
@@ -20,9 +20,9 @@ describe('Dashboard Access', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ->waitForNavigation()
-            ->assertUrlIs('/dashboard')
+            ->click('Log in');
+
+        $page->assertPathIs('/dashboard')
             ->assertSee('Dashboard');
     });
 });
@@ -38,8 +38,7 @@ describe('Dashboard Listing Overview', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Steers')
             ->assertSee('Test Steer on Dashboard');
@@ -55,8 +54,7 @@ describe('Dashboard Listing Overview', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Studs')
             ->assertSee('Test Stud on Dashboard');
@@ -72,8 +70,7 @@ describe('Dashboard Listing Overview', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Genetics')
             ->assertSee('Test Genetics on Dashboard');
@@ -89,8 +86,7 @@ describe('Dashboard Listing Overview', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Equipment')
             ->assertSee('Test Equipment on Dashboard');
@@ -100,14 +96,13 @@ describe('Dashboard Listing Overview', function () {
         $user = User::factory()->create();
         ServiceListing::factory()->create([
             'user_id' => $user->id,
-            'title' => 'Test Service on Dashboard',
+            'business_name' => 'Test Service on Dashboard',
         ]);
 
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Services')
             ->assertSee('Test Service on Dashboard');
@@ -121,8 +116,7 @@ describe('Dashboard Empty States', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         // Should see dashboard but no listings
         $page->assertSee('Dashboard');
@@ -140,8 +134,7 @@ describe('Dashboard Action Buttons', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Edit');
     });
@@ -156,8 +149,7 @@ describe('Dashboard Action Buttons', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Delete');
     });
@@ -172,12 +164,11 @@ describe('Dashboard Action Buttons', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
-        $page->click('Edit')
-            ->waitForNavigation()
-            ->assertUrlIs("/steers/{$steer->id}/edit");
+        $page->click('Edit');
+
+        $page->assertPathIs("/steers/{$steer->id}/edit");
     });
 });
 
@@ -192,8 +183,7 @@ describe('Dashboard Status Badges', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Draft');
     });
@@ -208,8 +198,7 @@ describe('Dashboard Status Badges', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Active');
     });
@@ -237,8 +226,7 @@ describe('Dashboard Multiple Listings', function () {
         $page = $this->visit('/login');
         $page->fill('email', $user->email)
             ->fill('password', 'password')
-            ->click('Log in')
-            ;
+            ->click('Log in');
 
         $page->assertSee('Multi Test Steer')
             ->assertSee('Multi Test Stud')

@@ -225,12 +225,12 @@ describe('Settings Navigation', function () {
         // Navigate to password
         $page->click('Password')
             ->waitForNavigation()
-            ->assertUrlIs('/settings/password');
+            ->assertPathIs('/settings/password');
 
         // Navigate to appearance
         $page->click('Appearance')
             ->waitForNavigation()
-            ->assertUrlIs('/settings/appearance');
+            ->assertPathIs('/settings/appearance');
     });
 
     it('can navigate to settings from dashboard', function () {
@@ -245,7 +245,7 @@ describe('Settings Navigation', function () {
         // Click settings link in user menu or sidebar
         $page->click('Settings')
             ->waitForNavigation()
-            ->assertUrlIs('/settings/profile');
+            ->assertPathIs('/settings/profile');
     });
 });
 
@@ -253,18 +253,18 @@ describe('Settings Access Control', function () {
     it('redirects unauthenticated users to login', function () {
         $page = $this->visit('/settings/profile');
 
-        $page->assertUrlIs('/login');
+        $page->assertPathIs('/login');
     });
 
     it('redirects unauthenticated users from password settings', function () {
         $page = $this->visit('/settings/password');
 
-        $page->assertUrlIs('/login');
+        $page->assertPathIs('/login');
     });
 
     it('redirects unauthenticated users from appearance settings', function () {
         $page = $this->visit('/settings/appearance');
 
-        $page->assertUrlIs('/login');
+        $page->assertPathIs('/login');
     });
 });

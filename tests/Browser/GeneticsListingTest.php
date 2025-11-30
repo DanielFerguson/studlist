@@ -42,7 +42,7 @@ describe('Genetics Listing Creation', function () {
             ->fill('email_contact', 'genetics@example.com')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('genetics_listings', [
             'user_id' => $user->id,
@@ -74,7 +74,7 @@ describe('Genetics Listing Creation', function () {
             ->fill('dam', 'Elite Cow')
             ->click('Create Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('genetics_listings', [
             'user_id' => $user->id,
@@ -125,7 +125,7 @@ describe('Genetics Listing Editing', function () {
             ->fill('price', '750')
             ->click('Update Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('genetics_listings', [
             'id' => $genetics->id,

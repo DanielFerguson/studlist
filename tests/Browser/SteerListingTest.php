@@ -110,7 +110,7 @@ describe('Steer Listing Editing', function () {
             ->fill('breed', 'Hereford')
             ->click('Update Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('steer_listings', [
             'id' => $steer->id,

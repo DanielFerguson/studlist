@@ -125,7 +125,7 @@ describe('Stud Listing Editing', function () {
             ->fill('tattoo_number', 'NEW456')
             ->click('Update Listing')
             ->waitForNavigation()
-            ->assertUrlIs('/dashboard');
+            ->assertPathIs('/dashboard');
 
         $this->assertDatabaseHas('stud_listings', [
             'id' => $stud->id,
