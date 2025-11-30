@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreShowEquipmentListingRequest;
 use App\Http\Requests\UpdateShowEquipmentListingRequest;
 use App\Models\ShowEquipmentListing;
-use Inertia\Inertia;
+use Illuminate\View\View;
 
 class ShowEquipmentListingController extends Controller
 {
@@ -20,11 +20,11 @@ class ShowEquipmentListingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', ShowEquipmentListing::class);
 
-        return Inertia::render('show-equipment-listings/create');
+        return view('listings.equipment.create');
     }
 
     /**
@@ -68,10 +68,10 @@ class ShowEquipmentListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ShowEquipmentListing $equipment)
+    public function show(ShowEquipmentListing $equipment): View
     {
         // Equipment listings don't have status field - they're always visible
-        return Inertia::render('equipment/show', [
+        return view('public.listings.equipment', [
             'listing' => $equipment->load('user'),
         ]);
     }
@@ -79,11 +79,11 @@ class ShowEquipmentListingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ShowEquipmentListing $showEquipment)
+    public function edit(ShowEquipmentListing $showEquipment): View
     {
         $this->authorize('update', $showEquipment);
 
-        return Inertia::render('show-equipment-listings/edit', [
+        return view('listings.equipment.edit', [
             'showEquipment' => $showEquipment,
         ]);
     }

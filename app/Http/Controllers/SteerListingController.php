@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSteerListingRequest;
 use App\Http\Requests\UpdateSteerListingRequest;
 use App\Models\SteerListing;
-use Inertia\Inertia;
+use Illuminate\View\View;
 
 class SteerListingController extends Controller
 {
@@ -20,11 +20,11 @@ class SteerListingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', SteerListing::class);
 
-        return Inertia::render('steer-listings/create');
+        return view('listings.steers.create');
     }
 
     /**
@@ -76,12 +76,12 @@ class SteerListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SteerListing $steer)
+    public function show(SteerListing $steer): View
     {
         // Only show active listings publicly
         abort_if($steer->status !== 'active', 404);
 
-        return Inertia::render('steers/show', [
+        return view('public.listings.steer', [
             'listing' => $steer->load('user'),
         ]);
     }
@@ -89,11 +89,11 @@ class SteerListingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SteerListing $steer)
+    public function edit(SteerListing $steer): View
     {
         $this->authorize('update', $steer);
 
-        return Inertia::render('steer-listings/edit', [
+        return view('listings.steers.edit', [
             'steer' => $steer,
         ]);
     }

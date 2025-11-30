@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreStudListingRequest;
 use App\Http\Requests\UpdateStudListingRequest;
 use App\Models\StudListing;
-use Inertia\Inertia;
+use Illuminate\View\View;
 
 class StudListingController extends Controller
 {
@@ -20,11 +20,11 @@ class StudListingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', StudListing::class);
 
-        return Inertia::render('stud-listings/create');
+        return view('listings.studs.create');
     }
 
     /**
@@ -74,12 +74,12 @@ class StudListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(StudListing $stud)
+    public function show(StudListing $stud): View
     {
         // Only show active listings publicly
         abort_if($stud->status !== 'active', 404);
 
-        return Inertia::render('studs/show', [
+        return view('public.listings.stud', [
             'listing' => $stud->load('user'),
         ]);
     }
@@ -87,11 +87,11 @@ class StudListingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(StudListing $stud)
+    public function edit(StudListing $stud): View
     {
         $this->authorize('update', $stud);
 
-        return Inertia::render('stud-listings/edit', [
+        return view('listings.studs.edit', [
             'stud' => $stud,
         ]);
     }

@@ -14,7 +14,6 @@ use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Public pages (Blade templates)
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
@@ -31,10 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()
             ->get()
             ->map(function ($listing) {
-                // Add subscription info to each listing
                 $listing->subscription_info = $listing->laravelSubscription();
                 $listing->type = 'steer';
-
                 return $listing;
             });
 
@@ -45,10 +42,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()
             ->get()
             ->map(function ($listing) {
-                // Add subscription info to each listing
                 $listing->subscription_info = $listing->laravelSubscription();
                 $listing->type = 'stud';
-
                 return $listing;
             });
 
@@ -64,7 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()
             ->get();
 
-        return Inertia::render('dashboard', [
+        return view('dashboard.index', [
             'steerListings' => $steerListings,
             'studListings' => $studListings,
             'geneticsListings' => $geneticsListings,

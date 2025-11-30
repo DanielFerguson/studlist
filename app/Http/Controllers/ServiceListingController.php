@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreServiceListingRequest;
 use App\Http\Requests\UpdateServiceListingRequest;
 use App\Models\ServiceListing;
-use Inertia\Inertia;
+use Illuminate\View\View;
 
 class ServiceListingController extends Controller
 {
@@ -20,11 +20,11 @@ class ServiceListingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', ServiceListing::class);
 
-        return Inertia::render('service-listings/create');
+        return view('listings.services.create');
     }
 
     /**
@@ -64,10 +64,10 @@ class ServiceListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ServiceListing $service)
+    public function show(ServiceListing $service): View
     {
         // Service listings are always visible (free)
-        return Inertia::render('services/show', [
+        return view('public.listings.service', [
             'listing' => $service->load('user'),
         ]);
     }
@@ -75,11 +75,11 @@ class ServiceListingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ServiceListing $service)
+    public function edit(ServiceListing $service): View
     {
         $this->authorize('update', $service);
 
-        return Inertia::render('service-listings/edit', [
+        return view('listings.services.edit', [
             'service' => $service,
         ]);
     }

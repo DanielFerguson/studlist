@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGeneticsListingRequest;
 use App\Http\Requests\UpdateGeneticsListingRequest;
 use App\Models\GeneticsListing;
-use Inertia\Inertia;
+use Illuminate\View\View;
 
 class GeneticsListingController extends Controller
 {
@@ -20,11 +20,11 @@ class GeneticsListingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', GeneticsListing::class);
 
-        return Inertia::render('genetics-listings/create');
+        return view('listings.genetics.create');
     }
 
     /**
@@ -73,10 +73,10 @@ class GeneticsListingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(GeneticsListing $genetic)
+    public function show(GeneticsListing $genetic): View
     {
         // Genetics listings don't have status field - they're always visible
-        return Inertia::render('genetics/show', [
+        return view('public.listings.genetics', [
             'listing' => $genetic->load('user'),
         ]);
     }
@@ -84,11 +84,11 @@ class GeneticsListingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(GeneticsListing $genetic)
+    public function edit(GeneticsListing $genetic): View
     {
         $this->authorize('update', $genetic);
 
-        return Inertia::render('genetics-listings/edit', [
+        return view('listings.genetics.edit', [
             'genetics' => $genetic,
         ]);
     }
