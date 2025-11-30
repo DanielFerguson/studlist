@@ -56,20 +56,24 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <x-form.input name="business_contact" label="Business Contact (Optional)"
-                                placeholder="e.g., My Stud" description="Your business name for contact." />
+                                placeholder="e.g., My Stud" description="Your business name for contact."
+                                :value="$contactDefaults['business_contact'] ?? ''" />
                         </div>
 
                         <x-form.input name="phone_contact" label="Phone Contact" type="tel"
                             placeholder="e.g., 0412345678"
-                            description="Your phone number for contact. Required if no email." />
+                            description="Your phone number for contact. Required if no email."
+                            :value="$contactDefaults['phone_contact'] ?? ''" />
 
                         <x-form.input name="email_contact" label="Email Contact" type="email"
                             placeholder="e.g., contact@example.com"
-                            description="Your email address for contact. Required if no phone." />
+                            description="Your email address for contact. Required if no phone."
+                            :value="$contactDefaults['email_contact'] ?? ''" />
 
                         <div class="md:col-span-2">
                             <x-form.input name="pic_number" label="PIC Number (Optional)" placeholder="e.g., N123456"
-                                description="Your Property Identification Code." />
+                                description="Your Property Identification Code."
+                                :value="$contactDefaults['pic_number'] ?? ''" />
                         </div>
                     </div>
                 </x-form.section>

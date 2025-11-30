@@ -24,7 +24,9 @@ class SteerListingController extends Controller
     {
         $this->authorize('create', SteerListing::class);
 
-        return view('listings.steers.create');
+        return view('listings.steers.create', [
+            'contactDefaults' => auth()->user()->getContactDefaults(),
+        ]);
     }
 
     /**
@@ -67,6 +69,9 @@ class SteerListingController extends Controller
             'started_on_feed' => $validated['started_on_feed'] ?? false,
             'price' => $validated['price'] ?? null,
         ]);
+
+        // Save contact info for future listings
+        $request->user()->saveContactDefaults($validated);
 
         // Redirect to checkout to immediately subscribe to the listing
         return redirect()->route('subscription.checkout', ['steer' => $steer->id])

@@ -116,6 +116,7 @@
                             type="tel"
                             placeholder="e.g., 0412345678"
                             description="Your phone number for contact. Required if no email."
+                            :value="$contactDefaults['phone_contact'] ?? ''"
                         />
 
                         <x-form.input 
@@ -124,6 +125,7 @@
                             type="email"
                             placeholder="e.g., contact@example.com"
                             description="Your email address for contact. Required if no phone."
+                            :value="$contactDefaults['email_contact'] ?? ''"
                         />
                     </div>
                 </x-form.section>

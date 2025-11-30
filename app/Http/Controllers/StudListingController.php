@@ -24,7 +24,9 @@ class StudListingController extends Controller
     {
         $this->authorize('create', StudListing::class);
 
-        return view('listings.studs.create');
+        return view('listings.studs.create', [
+            'contactDefaults' => auth()->user()->getContactDefaults(),
+        ]);
     }
 
     /**
@@ -65,6 +67,9 @@ class StudListingController extends Controller
             'pic_number' => $validated['pic_number'] ?? null,
             'description' => $validated['description'] ?? null,
         ]);
+
+        // Save contact info for future listings
+        $request->user()->saveContactDefaults($validated);
 
         // Redirect to checkout to immediately subscribe to the listing
         return redirect()->route('subscription.checkout-stud', ['stud' => $stud->id])

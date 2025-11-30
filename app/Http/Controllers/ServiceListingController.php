@@ -24,7 +24,9 @@ class ServiceListingController extends Controller
     {
         $this->authorize('create', ServiceListing::class);
 
-        return view('listings.services.create');
+        return view('listings.services.create', [
+            'contactDefaults' => auth()->user()->getContactDefaults(),
+        ]);
     }
 
     /**
@@ -55,6 +57,9 @@ class ServiceListingController extends Controller
             'links' => ! empty($links) ? array_values($links) : null,
             'description' => $validated['description'] ?? null,
         ]);
+
+        // Save contact info for future listings
+        $request->user()->saveContactDefaults($validated);
 
         // Redirect to dashboard - service listings are free
         return redirect()->route('dashboard')

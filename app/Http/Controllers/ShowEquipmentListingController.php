@@ -24,7 +24,9 @@ class ShowEquipmentListingController extends Controller
     {
         $this->authorize('create', ShowEquipmentListing::class);
 
-        return view('listings.equipment.create');
+        return view('listings.equipment.create', [
+            'contactDefaults' => auth()->user()->getContactDefaults(),
+        ]);
     }
 
     /**
@@ -59,6 +61,9 @@ class ShowEquipmentListingController extends Controller
             'phone_contact' => $validated['phone_contact'] ?? null,
             'email_contact' => $validated['email_contact'] ?? null,
         ]);
+
+        // Save contact info for future listings
+        $request->user()->saveContactDefaults($validated);
 
         // Redirect to dashboard - show equipment listings are free
         return redirect()->route('dashboard')

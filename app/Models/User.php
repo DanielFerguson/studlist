@@ -36,6 +36,10 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'is_admin',
+        'contact_business_name',
+        'contact_phone',
+        'contact_email',
+        'contact_pic_number',
     ];
 
     /**
@@ -112,7 +116,7 @@ class User extends Authenticatable implements FilamentUser
         }
 
         return $this->subscriptions()
-            ->where('type', 'steer_'.$steer->id)
+            ->where('type', 'steer_' . $steer->id)
             ->orWhere('stripe_id', $steer->stripe_subscription_id)
             ->first();
     }
@@ -142,5 +146,36 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
+    }
+
+    /**
+     * Get contact defaults for listing forms.
+     * Falls back to registered email if no contact_email is set.
+     *
+     * @return array<string, string|null>
+     */
+    public function getContactDefaults(): array
+    {
+        return [
+            'business_contact' => $this->contact_business_name,
+            'phone_contact' => $this->contact_phone,
+            'email_contact' => $this->contact_email ?? $this->email,
+            'pic_number' => $this->contact_pic_number,
+        ];
+    }
+
+    /**
+     * Save contact information from a listing form.
+     *
+     * @param  array<string, string|null>  $contactData
+     */
+    public function saveContactDefaults(array $contactData): void
+    {
+        $this->update([
+            'contact_business_name' => $contactData['business_contact'] ?? $this->contact_business_name,
+            'contact_phone' => $contactData['phone_contact'] ?? $this->contact_phone,
+            'contact_email' => $contactData['email_contact'] ?? $this->contact_email,
+            'contact_pic_number' => $contactData['pic_number'] ?? $this->contact_pic_number,
+        ]);
     }
 }

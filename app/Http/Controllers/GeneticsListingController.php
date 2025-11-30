@@ -24,7 +24,9 @@ class GeneticsListingController extends Controller
     {
         $this->authorize('create', GeneticsListing::class);
 
-        return view('listings.genetics.create');
+        return view('listings.genetics.create', [
+            'contactDefaults' => auth()->user()->getContactDefaults(),
+        ]);
     }
 
     /**
@@ -64,6 +66,9 @@ class GeneticsListingController extends Controller
             'email_contact' => $validated['email_contact'] ?? null,
             'description' => $validated['description'] ?? null,
         ]);
+
+        // Save contact info for future listings
+        $request->user()->saveContactDefaults($validated);
 
         // Redirect to dashboard - genetics listings are free
         return redirect()->route('dashboard')
