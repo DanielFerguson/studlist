@@ -18,3 +18,6 @@ enum EquipmentCondition: string
     }
 }
 
+
+
+
