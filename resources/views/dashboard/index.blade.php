@@ -105,7 +105,7 @@
                                         Edit
                                     </a>
                                     <button type="button"
-                                        @click="openDeleteModal('steer', {{ $listing->id }}, '{{ $listing->name }}')"
+                                        @click="openDeleteModal('steers', {{ $listing->id }}, '{{ $listing->name }}')"
                                         class="btn-danger btn-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -224,7 +224,7 @@
                                         Edit
                                     </a>
                                     <button type="button"
-                                        @click="openDeleteModal('stud', {{ $listing->id }}, '{{ $listing->name }}')"
+                                        @click="openDeleteModal('studs', {{ $listing->id }}, '{{ $listing->name }}')"
                                         class="btn-danger btn-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
