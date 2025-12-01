@@ -21,3 +21,4 @@ enum EquipmentCondition: string
 
 
 
+

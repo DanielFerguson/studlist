@@ -4,30 +4,31 @@
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
+                    <img src="/sl-logo.svg" alt="StudList" class="h-10 w-10">
                     <span class="font-heading text-2xl font-bold text-[var(--color-text)]">StudList</span>
                 </a>
             </div>
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('search') }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                <a href="{{ route('search') }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Browse Listings
                 </a>
-                <a href="{{ route('search', ['category' => ['steers']]) }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                <a href="{{ route('search', ['category' => ['steers']]) }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Steers
                 </a>
-                <a href="{{ route('search', ['category' => ['studs']]) }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                <a href="{{ route('search', ['category' => ['studs']]) }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Studs
                 </a>
-                <a href="{{ route('search', ['category' => ['genetics']]) }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                <a href="{{ route('search', ['category' => ['genetics']]) }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Genetics
                 </a>
-                <a href="{{ route('about') }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                <a href="{{ route('about') }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     About
                 </a>
             </div>
@@ -35,27 +36,31 @@
             <!-- Auth Buttons -->
             <div class="hidden md:flex items-center gap-4">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="btn-outline text-sm">
-                        Dashboard
-                    </a>
+                <a href="{{ route('dashboard') }}" class="btn-outline text-sm">
+                    Dashboard
+                </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
-                        Log in
-                    </a>
-                    <a href="{{ route('register') }}" class="btn-primary text-sm">
-                        Start Listing
-                    </a>
+                <a href="{{ route('login') }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                    Log in
+                </a>
+                <a href="{{ route('register') }}" class="btn-primary text-sm">
+                    Start Listing
+                </a>
                 @endauth
             </div>
 
             <!-- Mobile menu button -->
             <div class="md:hidden flex items-center">
-                <button type="button" onclick="toggleMobileMenu()" class="text-[var(--color-text)] hover:text-[var(--color-primary)] p-2">
+                <button type="button" onclick="toggleMobileMenu()"
+                    class="text-[var(--color-text)] hover:text-[var(--color-primary)] p-2">
                     <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                     <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -64,33 +69,40 @@
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden md:hidden pb-4">
             <div class="flex flex-col gap-2 pt-4 border-t border-[var(--color-border)]">
-                <a href="{{ route('search') }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                <a href="{{ route('search') }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Browse Listings
                 </a>
-                <a href="{{ route('search', ['category' => ['steers']]) }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                <a href="{{ route('search', ['category' => ['steers']]) }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Steers
                 </a>
-                <a href="{{ route('search', ['category' => ['studs']]) }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                <a href="{{ route('search', ['category' => ['studs']]) }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Studs
                 </a>
-                <a href="{{ route('search', ['category' => ['genetics']]) }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                <a href="{{ route('search', ['category' => ['genetics']]) }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Genetics
                 </a>
-                <a href="{{ route('about') }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                <a href="{{ route('about') }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     About
                 </a>
                 <hr class="border-[var(--color-border)] my-2">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="px-4 py-2 text-[var(--color-primary)] font-medium hover:bg-[var(--color-cream)] rounded-lg transition-colors">
-                        Dashboard
-                    </a>
+                <a href="{{ route('dashboard') }}"
+                    class="px-4 py-2 text-[var(--color-primary)] font-medium hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                    Dashboard
+                </a>
                 @else
-                    <a href="{{ route('login') }}" class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
-                        Log in
-                    </a>
-                    <a href="{{ route('register') }}" class="mx-4 btn-primary text-center text-sm">
-                        Start Listing
-                    </a>
+                <a href="{{ route('login') }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                    Log in
+                </a>
+                <a href="{{ route('register') }}" class="mx-4 btn-primary text-center text-sm">
+                    Start Listing
+                </a>
                 @endauth
             </div>
         </div>
@@ -108,4 +120,3 @@
         }
     </script>
 </header>
-

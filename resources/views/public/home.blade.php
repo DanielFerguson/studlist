@@ -333,8 +333,8 @@
     <section
         class="py-24 bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-secondary)] relative overflow-hidden">
         <div class="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=1920&q=80" alt="Cattle farm"
-                class="w-full h-full object-cover mix-blend-overlay opacity-30">
+            <img src="https://images.unsplash.com/photo-1682591898049-e4a8c69739ce?q=40&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Cattle farm" class="w-full h-full object-cover mix-blend-overlay opacity-30">
         </div>
 
         <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

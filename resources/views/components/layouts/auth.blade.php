@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,14 +8,17 @@
 
     <title>{{ $title ?? 'Authentication' }} - StudList</title>
 
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <!-- Google Fonts - Rustic Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     @vite(['resources/css/app.css'])
 
@@ -148,12 +152,13 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body class="min-h-screen bg-[var(--color-warm-white)] flex flex-col">
     <!-- Header -->
     <header class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="flex items-center gap-2 w-fit">
-                <img src="/logo.svg" alt="StudList" class="h-10 w-10">
+                <img src="/sl-logo.svg" alt="StudList" class="h-10 w-10">
                 <span class="font-heading font-bold text-2xl text-[var(--color-primary)]">StudList</span>
             </a>
         </div>
@@ -166,16 +171,16 @@
                 <div class="p-8">
                     <!-- Title -->
                     @if(isset($title))
-                        <div class="text-center mb-8">
-                            <h1 class="font-heading text-2xl font-bold text-[var(--color-text)]">
-                                {{ $heading ?? $title }}
-                            </h1>
-                            @if(isset($description))
-                                <p class="mt-2 text-[var(--color-text-light)]">
-                                    {{ $description }}
-                                </p>
-                            @endif
-                        </div>
+                    <div class="text-center mb-8">
+                        <h1 class="font-heading text-2xl font-bold text-[var(--color-text)]">
+                            {{ $heading ?? $title }}
+                        </h1>
+                        @if(isset($description))
+                        <p class="mt-2 text-[var(--color-text-light)]">
+                            {{ $description }}
+                        </p>
+                        @endif
+                    </div>
                     @endif
 
                     {{ $slot }}
@@ -189,5 +194,5 @@
         <p>&copy; {{ date('Y') }} StudList. All rights reserved.</p>
     </footer>
 </body>
-</html>
 
+</html>
