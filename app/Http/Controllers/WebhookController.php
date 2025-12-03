@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\SteerListing;
 use App\Models\StudListing;
 use Illuminate\Support\Facades\Log;
+use Laravel\Cashier\Cashier;
+use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Events\WebhookReceived;
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
+use Laravel\Cashier\Subscription;
 
 class WebhookController extends CashierWebhookController
 {
@@ -16,13 +20,44 @@ class WebhookController extends CashierWebhookController
     {
         Log::info('Subscription created webhook', ['payload' => $payload]);
 
-        // Let Cashier handle the basic subscription creation first
-        $result = parent::handleCustomerSubscriptionCreated($payload);
+        $data = $payload['data']['object'];
+
+        if ($user = $this->getUserByStripeId($data['customer'])) {
+            // Check if subscription already exists
+            $subscription = $user->subscriptions()->where('stripe_id', $data['id'])->first();
+
+            if (! $subscription) {
+                // Create the subscription record
+                $firstItem = $data['items']['data'][0] ?? null;
+
+                $subscription = $user->subscriptions()->create([
+                    'type' => $data['metadata']['type'] ?? 'default',
+                    'stripe_id' => $data['id'],
+                    'stripe_status' => $data['status'],
+                    'stripe_price' => $firstItem['price']['id'] ?? null,
+                    'quantity' => $firstItem['quantity'] ?? 1,
+                    'trial_ends_at' => isset($data['trial_end']) ? \Carbon\Carbon::createFromTimestamp($data['trial_end']) : null,
+                    'ends_at' => null,
+                ]);
+
+                // Create subscription items
+                foreach ($data['items']['data'] as $item) {
+                    $subscription->items()->create([
+                        'stripe_id' => $item['id'],
+                        'stripe_product' => $item['price']['product'] ?? null,
+                        'stripe_price' => $item['price']['id'],
+                        'quantity' => $item['quantity'] ?? 1,
+                    ]);
+                }
+            }
+        }
 
         // Update the listing status (steer or stud)
-        $this->updateListingFromSubscription($payload['data']['object'], 'active');
+        $this->updateListingFromSubscription($data, 'active');
 
-        return $result;
+        WebhookHandled::dispatch($payload);
+
+        return $this->successMethod();
     }
 
     /**
@@ -32,15 +67,41 @@ class WebhookController extends CashierWebhookController
     {
         Log::info('Subscription updated webhook', ['payload' => $payload]);
 
-        // Let Cashier handle the basic subscription update first
-        $result = parent::handleCustomerSubscriptionUpdated($payload);
+        $data = $payload['data']['object'];
+
+        if ($user = $this->getUserByStripeId($data['customer'])) {
+            $subscription = $user->subscriptions()->where('stripe_id', $data['id'])->first();
+
+            if ($subscription) {
+                $firstItem = $data['items']['data'][0] ?? null;
+
+                // Determine ends_at based on cancellation status
+                $endsAt = null;
+                if ($data['cancel_at_period_end'] ?? false) {
+                    $endsAt = isset($data['cancel_at'])
+                        ? \Carbon\Carbon::createFromTimestamp($data['cancel_at'])
+                        : (isset($firstItem['current_period_end'])
+                            ? \Carbon\Carbon::createFromTimestamp($firstItem['current_period_end'])
+                            : null);
+                }
+
+                $subscription->update([
+                    'stripe_status' => $data['status'],
+                    'stripe_price' => $firstItem['price']['id'] ?? $subscription->stripe_price,
+                    'quantity' => $firstItem['quantity'] ?? $subscription->quantity,
+                    'trial_ends_at' => isset($data['trial_end']) ? \Carbon\Carbon::createFromTimestamp($data['trial_end']) : $subscription->trial_ends_at,
+                    'ends_at' => $endsAt,
+                ]);
+            }
+        }
 
         // Update the listing status based on subscription status
-        $subscription = $payload['data']['object'];
-        $status = $this->mapStripeStatusToListingStatus($subscription['status']);
-        $this->updateListingFromSubscription($subscription, $status);
+        $status = $this->mapStripeStatusToListingStatus($data['status']);
+        $this->updateListingFromSubscription($data, $status);
 
-        return $result;
+        WebhookHandled::dispatch($payload);
+
+        return $this->successMethod();
     }
 
     /**
@@ -50,13 +111,25 @@ class WebhookController extends CashierWebhookController
     {
         Log::info('Subscription deleted webhook', ['payload' => $payload]);
 
-        // Let Cashier handle the basic subscription deletion first
-        $result = parent::handleCustomerSubscriptionDeleted($payload);
+        $data = $payload['data']['object'];
+
+        if ($user = $this->getUserByStripeId($data['customer'])) {
+            $subscription = $user->subscriptions()->where('stripe_id', $data['id'])->first();
+
+            if ($subscription) {
+                $subscription->update([
+                    'stripe_status' => $data['status'],
+                    'ends_at' => $subscription->ends_at ?? now(),
+                ]);
+            }
+        }
 
         // Update the listing status
-        $this->updateListingFromSubscription($payload['data']['object'], 'cancelled');
+        $this->updateListingFromSubscription($data, 'cancelled');
 
-        return $result;
+        WebhookHandled::dispatch($payload);
+
+        return $this->successMethod();
     }
 
     /**
@@ -66,8 +139,15 @@ class WebhookController extends CashierWebhookController
     {
         Log::info('Invoice payment succeeded webhook', ['payload' => $payload]);
 
-        // Let Cashier handle the basic invoice processing first
-        $result = parent::handleInvoicePaymentSucceeded($payload);
+        // Let Cashier handle the basic invoice processing
+        // This event doesn't use current_period_end so it should be safe
+        try {
+            parent::handleInvoicePaymentSucceeded($payload);
+        } catch (\Exception $e) {
+            Log::warning('Cashier invoice processing failed, continuing with custom logic', [
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         // If this is a subscription renewal, make sure the listing is active
         $invoice = $payload['data']['object'];
@@ -75,7 +155,7 @@ class WebhookController extends CashierWebhookController
             $this->updateListingFromSubscriptionId($invoice['subscription'], 'active');
         }
 
-        return $result;
+        return $this->successMethod();
     }
 
     /**
@@ -85,16 +165,30 @@ class WebhookController extends CashierWebhookController
     {
         Log::info('Invoice payment failed webhook', ['payload' => $payload]);
 
-        // Let Cashier handle the basic invoice processing first
-        $result = parent::handleInvoicePaymentFailed($payload);
+        // Let Cashier handle the basic invoice processing
+        try {
+            parent::handleInvoicePaymentFailed($payload);
+        } catch (\Exception $e) {
+            Log::warning('Cashier invoice processing failed, continuing with custom logic', [
+                'error' => $e->getMessage(),
+            ]);
+        }
 
-        // If this is a subscription payment failure, cancel the listing
+        // If this is a subscription payment failure, mark the listing as cancelled
         $invoice = $payload['data']['object'];
         if (isset($invoice['subscription'])) {
             $this->updateListingFromSubscriptionId($invoice['subscription'], 'cancelled');
         }
 
-        return $result;
+        return $this->successMethod();
+    }
+
+    /**
+     * Get the billable model instance by Stripe ID.
+     */
+    protected function getUserByStripeId($stripeId)
+    {
+        return Cashier::findBillable($stripeId);
     }
 
     /**
