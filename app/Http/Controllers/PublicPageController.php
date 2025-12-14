@@ -15,6 +15,7 @@ class PublicPageController extends Controller
     public function __construct(
         private AnalyticsService $analytics
     ) {}
+
     /**
      * Display the homepage.
      */

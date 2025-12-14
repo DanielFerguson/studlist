@@ -13,6 +13,7 @@ class ServiceListingController extends Controller
     public function __construct(
         private AnalyticsService $analytics
     ) {}
+
     /**
      * Display a listing of the resource.
      */

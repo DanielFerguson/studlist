@@ -135,6 +135,6 @@ class AnalyticsService
 
     private function getAnonymousId(): string
     {
-        return session()->getId() ?: 'anonymous_' . uniqid();
+        return session()->getId() ?: 'anonymous_'.uniqid();
     }
 }

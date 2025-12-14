@@ -13,6 +13,7 @@ class SubscriptionController extends Controller
     public function __construct(
         private AnalyticsService $analytics
     ) {}
+
     /**
      * Create a Stripe checkout session for a steer listing subscription
      */
