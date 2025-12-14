@@ -3,7 +3,7 @@
         <div class="card-rustic">
             <div class="p-6 border-b border-[var(--color-border)]">
                 <h1 class="font-heading text-2xl font-semibold text-[var(--color-text)]">List a Stud</h1>
-                <p class="text-[var(--color-text-light)] mt-1">Create a new listing for your stud bull. You'll be redirected to checkout after creating.</p>
+                <p class="text-[var(--color-text-light)] mt-1">Create a new listing for your stud bull. Your listing will be published immediately.</p>
             </div>
 
             <form method="POST" action="{{ route('studs.store') }}" enctype="multipart/form-data" class="p-6 space-y-8">
@@ -157,7 +157,7 @@
                 <div class="flex justify-end pt-6 border-t border-[var(--color-border)]">
                     <a href="{{ route('dashboard') }}" class="btn-outline mr-4">Cancel</a>
                     <button type="submit" class="btn-primary">
-                        Create Listing & Subscribe
+                        Create Listing
                     </button>
                 </div>
             </form>

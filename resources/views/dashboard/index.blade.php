@@ -15,7 +15,7 @@
                     <div>
                         <h2 class="font-heading text-xl font-semibold text-[var(--color-text)]">Steers</h2>
                         <p class="text-sm text-[var(--color-text-light)]">
-                            Your steer listings. Draft listings are not visible until you subscribe for $15/month.
+                            Your steer listings. All listings are free to post!
                         </p>
                     </div>
                     <a href="{{ route('steers.create') }}" class="btn-primary btn-sm whitespace-nowrap">
@@ -61,17 +61,7 @@
                             <td>
                                 <div class="flex justify-end gap-2 flex-wrap">
                                     @if($listing->status === 'draft')
-                                    <form method="POST" action="{{ route('subscription.checkout', $listing) }}">
-                                        @csrf
-                                        <button type="submit" class="btn-primary btn-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                                </path>
-                                            </svg>
-                                            Subscribe ($15/mo)
-                                        </button>
-                                    </form>
+                                    <span class="text-sm text-[var(--color-text-light)]">Delete & recreate to activate</span>
                                     @elseif($listing->status === 'active')
                                     <form method="POST" action="{{ route('subscription.cancel', $listing) }}">
                                         @csrf
@@ -84,17 +74,7 @@
                                         </button>
                                     </form>
                                     @elseif($listing->status === 'cancelled')
-                                    <form method="POST" action="{{ route('subscription.checkout', $listing) }}">
-                                        @csrf
-                                        <button type="submit" class="btn-primary btn-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                                </path>
-                                            </svg>
-                                            Reactivate ($15/mo)
-                                        </button>
-                                    </form>
+                                    <span class="text-sm text-[var(--color-text-light)]">Delete & recreate to activate</span>
                                     @endif
                                     <a href="{{ route('steers.edit', $listing) }}" class="btn-outline btn-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +116,7 @@
                     <div>
                         <h2 class="font-heading text-xl font-semibold text-[var(--color-text)]">Studs</h2>
                         <p class="text-sm text-[var(--color-text-light)]">
-                            Your stud listings. Draft listings are not visible until you subscribe for $15/month.
+                            Your stud listings. All listings are free to post!
                         </p>
                     </div>
                     <a href="{{ route('studs.create') }}" class="btn-primary btn-sm whitespace-nowrap">
@@ -180,17 +160,7 @@
                             <td>
                                 <div class="flex justify-end gap-2 flex-wrap">
                                     @if($listing->status === 'draft')
-                                    <form method="POST" action="{{ route('subscription.checkout-stud', $listing) }}">
-                                        @csrf
-                                        <button type="submit" class="btn-primary btn-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                                </path>
-                                            </svg>
-                                            Subscribe ($15/mo)
-                                        </button>
-                                    </form>
+                                    <span class="text-sm text-[var(--color-text-light)]">Delete & recreate to activate</span>
                                     @elseif($listing->status === 'active')
                                     <form method="POST" action="{{ route('subscription.cancel-stud', $listing) }}">
                                         @csrf
@@ -203,17 +173,7 @@
                                         </button>
                                     </form>
                                     @elseif($listing->status === 'cancelled')
-                                    <form method="POST" action="{{ route('subscription.checkout-stud', $listing) }}">
-                                        @csrf
-                                        <button type="submit" class="btn-primary btn-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                                </path>
-                                            </svg>
-                                            Reactivate ($15/mo)
-                                        </button>
-                                    </form>
+                                    <span class="text-sm text-[var(--color-text-light)]">Delete & recreate to activate</span>
                                     @endif
                                     <a href="{{ route('studs.edit', $listing) }}" class="btn-outline btn-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

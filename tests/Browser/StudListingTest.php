@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\StudListing;
+use App\Models\User;
 
 describe('Stud Listing Creation', function () {
     it('can view the create stud listing form', function () {

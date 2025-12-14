@@ -39,10 +39,10 @@ describe('Steer Listing Photo Uploads', function () {
             $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
 
-        // Steers should be created and redirect to checkout
+        // Steers should be created and redirect to dashboard
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
-        $response->assertRedirect("/subscriptions/checkout/{$steer->id}");
+        $response->assertRedirect('/dashboard');
         $this->assertCount(2, $steer->photos);
 
         // Verify files were stored in correct directory
@@ -108,10 +108,10 @@ describe('Steer Listing Photo Uploads', function () {
             $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
 
-        // Steers should be created and redirect to checkout
+        // Steers should be created and redirect to dashboard
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
-        $response->assertRedirect("/subscriptions/checkout/{$steer->id}");
+        $response->assertRedirect('/dashboard');
         $this->assertCount(1, $steer->photos);
         Storage::disk('public')->assertExists($steer->photos[0]);
     });
@@ -136,10 +136,10 @@ describe('Steer Listing Photo Uploads', function () {
             $this->fail('Validation failed: '.implode(', ', session('errors')->all()));
         }
 
-        // Steers should be created and redirect to checkout
+        // Steers should be created and redirect to dashboard
         $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($steer);
-        $response->assertRedirect("/subscriptions/checkout/{$steer->id}");
+        $response->assertRedirect('/dashboard');
         $this->assertEmpty($steer->photos);
     });
 });
@@ -172,10 +172,10 @@ describe('Stud Listing Photo Uploads', function () {
         $response = $this->actingAs($user)
             ->post('/studs', $studData);
 
-        // Studs should be created and redirect to checkout
+        // Studs should be created and redirect to dashboard
         $stud = StudListing::where('user_id', $user->id)->latest()->first();
         $this->assertNotNull($stud);
-        $response->assertRedirect("/subscriptions/checkout-stud/{$stud->id}");
+        $response->assertRedirect('/dashboard');
         $this->assertCount(3, $stud->photos);
 
         // Verify files were stored in correct directory

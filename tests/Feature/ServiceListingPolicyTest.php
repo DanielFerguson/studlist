@@ -11,7 +11,7 @@ describe('ServiceListing Policy', function () {
             $viewer = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $owner->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->view($viewer, $listing))->toBeTrue();
             expect($policy->view($owner, $listing))->toBeTrue();
@@ -21,7 +21,7 @@ describe('ServiceListing Policy', function () {
     describe('Create Policy', function () {
         it('authenticated users can create service listings', function () {
             $user = User::factory()->create();
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->create($user))->toBeTrue();
         });
@@ -37,7 +37,7 @@ describe('ServiceListing Policy', function () {
             $user = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $user->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->update($user, $listing))->toBeTrue();
         });
@@ -47,7 +47,7 @@ describe('ServiceListing Policy', function () {
             $otherUser = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $owner->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->update($otherUser, $listing))->toBeFalse();
         });
@@ -58,7 +58,7 @@ describe('ServiceListing Policy', function () {
             $user = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $user->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->delete($user, $listing))->toBeTrue();
         });
@@ -68,7 +68,7 @@ describe('ServiceListing Policy', function () {
             $otherUser = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $owner->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             expect($policy->delete($otherUser, $listing))->toBeFalse();
         });
@@ -80,7 +80,7 @@ describe('ServiceListing Policy', function () {
             $nonOwner = User::factory()->create();
             $listing = ServiceListing::factory()->create(['user_id' => $owner->id]);
 
-            $policy = new ServiceListingPolicy();
+            $policy = new ServiceListingPolicy;
 
             // Owner can do everything
             expect($policy->view($owner, $listing))->toBeTrue();
@@ -94,10 +94,3 @@ describe('ServiceListing Policy', function () {
         });
     });
 });
-
-
-
-
-
-
-

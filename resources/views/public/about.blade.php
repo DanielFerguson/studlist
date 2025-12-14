@@ -144,12 +144,12 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <!-- Paid Listings -->
+                <!-- Steers & Studs -->
                 <div class="card-rustic p-8">
                     <div class="text-center mb-6">
                         <h3 class="font-heading text-2xl font-bold text-[var(--color-text)] mb-2">Steers & Studs</h3>
                         <div class="font-heading text-4xl font-bold text-[var(--color-primary)]">
-                            $15<span class="text-lg text-[var(--color-text-light)] font-normal">/month</span>
+                            Free
                         </div>
                     </div>
                     <ul class="space-y-4 mb-8">
@@ -183,7 +183,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span class="text-[var(--color-text-light)]">Cancel anytime</span>
+                            <span class="text-[var(--color-text-light)]">Publish instantly</span>
                         </li>
                     </ul>
                     <a href="{{ route('register') }}" class="btn-primary block text-center w-full">

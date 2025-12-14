@@ -2,15 +2,9 @@
 
 StudList is a website that will allow users to put up ads for cattle, genetics (semen straws) and equipment.
 
-Users can do this through...
-1. creating the listing (creating a record(s) in the database)
-2. paying for the listing (subscribe to a recurring fee of $15 through Stripe and Laravel Cashier to keep the listing live)
+Users can create listings which are immediately published and visible to buyers.
 
-Note: Genetics, Show Equipment, and Services listings are free to post.
-
-The user doesn't need to pay for the listing when they create it, but it won't show until they do.
-
-The user can cancel the listing at any point, which will cancel the subscription. They can also
+Note: All listing types are currently free to post.
 
 ## Listing Details
 
@@ -84,10 +78,8 @@ The user can cancel the listing at any point, which will cancel the subscription
 - User can view a listing
 - User can view their listings (/dashboard)
 
-### Subscriptions
-- User can subscribe to a listing (show the listing publicly)
-- User can pause a subscription
-- User can cancel a subscription
+### Billing (Legacy)
+- Subscription infrastructure exists for future use
 - User can view their billing portal
 
 ## Tech Stack

@@ -10,8 +10,8 @@
 |
 */
 
-use Tests\BrowserTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\BrowserTestCase;
 
 pest()->extend(BrowserTestCase::class)
     ->use(RefreshDatabase::class)

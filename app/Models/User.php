@@ -116,7 +116,7 @@ class User extends Authenticatable implements FilamentUser
         }
 
         return $this->subscriptions()
-            ->where('type', 'steer_' . $steer->id)
+            ->where('type', 'steer_'.$steer->id)
             ->orWhere('stripe_id', $steer->stripe_subscription_id)
             ->first();
     }

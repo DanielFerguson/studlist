@@ -36,10 +36,3 @@ class ServiceListingFactory extends Factory
         ];
     }
 }
-
-
-
-
-
-
-

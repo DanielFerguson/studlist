@@ -17,10 +17,3 @@ class EditServiceListing extends EditRecord
         ];
     }
 }
-
-
-
-
-
-
-

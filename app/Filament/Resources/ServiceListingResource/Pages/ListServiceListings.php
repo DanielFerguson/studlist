@@ -17,10 +17,3 @@ class ListServiceListings extends ListRecords
         ];
     }
 }
-
-
-
-
-
-
-

@@ -38,7 +38,7 @@ describe('Steer Listing Creation', function () {
             ->post('/steers', $steerData);
 
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Steer listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Steer listing created successfully! Your listing is now live.');
 
         // Verify the listing was created correctly in the database
         $steer = SteerListing::where('user_id', $user->id)
@@ -49,18 +49,18 @@ describe('Steer Listing Creation', function () {
             'user_id' => $user->id,
             'name' => 'Test Steer',
             'breed' => 'Angus',
-            'status' => 'draft',
+            'status' => 'active',
         ]);
 
-        // Verify redirect goes to checkout
-        $response->assertRedirect(route('subscription.checkout', ['steer' => $steer->id]));
+        // Verify redirect goes to dashboard
+        $response->assertRedirect(route('dashboard'));
     });
 
-    test('creating a steer listing redirects to checkout for immediate subscription', function () {
+    test('creating a steer listing publishes immediately', function () {
         $user = User::factory()->create();
 
         $steerData = [
-            'name' => 'Test Steer for Checkout',
+            'name' => 'Test Steer for Publish',
             'dob' => '2023-01-15',
             'breed' => 'Angus',
             'colour' => 'Black',
@@ -71,20 +71,20 @@ describe('Steer Listing Creation', function () {
         $response = $this->actingAs($user)
             ->post('/steers', $steerData);
 
-        // Should redirect to checkout for the newly created steer
+        // Should redirect to dashboard
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Steer listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Steer listing created successfully! Your listing is now live.');
 
-        // Verify the listing was created as a draft
+        // Verify the listing was created as active
         $steer = SteerListing::where('user_id', $user->id)
-            ->where('name', 'Test Steer for Checkout')
+            ->where('name', 'Test Steer for Publish')
             ->first();
 
         $this->assertNotNull($steer);
-        $this->assertTrue($steer->isDraft());
+        $this->assertTrue($steer->isActive());
 
-        // Verify redirect URL contains the checkout route
-        $response->assertRedirect(route('subscription.checkout', ['steer' => $steer->id]));
+        // Verify redirect URL is dashboard
+        $response->assertRedirect(route('dashboard'));
     });
 });
 

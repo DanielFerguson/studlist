@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\SteerListing;
+use App\Models\User;
 
 describe('Steer Listing Creation', function () {
     it('can view the create steer listing form', function () {

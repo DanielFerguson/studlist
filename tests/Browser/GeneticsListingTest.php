@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\GeneticsListing;
+use App\Models\User;
 
 describe('Genetics Listing Creation', function () {
     it('can view the create genetics listing form', function () {

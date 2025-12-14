@@ -38,7 +38,7 @@ describe('Stud Listing Creation', function () {
             ->post('/studs', $studData);
 
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
         // Verify the listing was created correctly in the database
         $stud = StudListing::where('user_id', $user->id)
@@ -49,11 +49,11 @@ describe('Stud Listing Creation', function () {
             'user_id' => $user->id,
             'name' => 'Test Stud',
             'breed' => 'Angus',
-            'status' => 'draft',
+            'status' => 'active',
         ]);
 
-        // Verify redirect goes to checkout
-        $response->assertRedirect(route('subscription.checkout-stud', ['stud' => $stud->id]));
+        // Verify redirect goes to dashboard
+        $response->assertRedirect(route('dashboard'));
     });
 
     test('users can create a stud listing with stud-specific fields', function () {
@@ -79,7 +79,7 @@ describe('Stud Listing Creation', function () {
             ->post('/studs', $studData);
 
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
         $this->assertDatabaseHas('stud_listings', [
             'user_id' => $user->id,
@@ -87,14 +87,15 @@ describe('Stud Listing Creation', function () {
             'tattoo_number' => 'CH123',
             'registration_link' => 'https://example.com/registration',
             'business_contact' => 'Elite Genetics',
+            'status' => 'active',
         ]);
     });
 
-    test('creating a stud listing redirects to checkout for immediate subscription', function () {
+    test('creating a stud listing publishes immediately', function () {
         $user = User::factory()->create();
 
         $studData = [
-            'name' => 'Test Stud for Checkout',
+            'name' => 'Test Stud for Publish',
             'dob' => '2020-01-15',
             'breed' => 'Angus',
             'colour' => 'Black',
@@ -105,20 +106,20 @@ describe('Stud Listing Creation', function () {
         $response = $this->actingAs($user)
             ->post('/studs', $studData);
 
-        // Should redirect to checkout for the newly created stud
+        // Should redirect to dashboard
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
-        // Verify the listing was created as a draft
+        // Verify the listing was created as active
         $stud = StudListing::where('user_id', $user->id)
-            ->where('name', 'Test Stud for Checkout')
+            ->where('name', 'Test Stud for Publish')
             ->first();
 
         $this->assertNotNull($stud);
-        $this->assertTrue($stud->isDraft());
+        $this->assertTrue($stud->isActive());
 
-        // Verify redirect URL contains the checkout route
-        $response->assertRedirect(route('subscription.checkout-stud', ['stud' => $stud->id]));
+        // Verify redirect URL is dashboard
+        $response->assertRedirect(route('dashboard'));
     });
 });
 

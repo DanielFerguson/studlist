@@ -17,10 +17,3 @@ enum EquipmentCondition: string
             ->toArray();
     }
 }
-
-
-
-
-
-
-

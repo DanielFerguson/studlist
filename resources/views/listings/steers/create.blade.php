@@ -3,8 +3,7 @@
         <div class="card-rustic">
             <div class="p-6 border-b border-[var(--color-border)]">
                 <h1 class="font-heading text-2xl font-semibold text-[var(--color-text)]">List a Steer</h1>
-                <p class="text-[var(--color-text-light)] mt-1">Create a new listing for your steer. You'll be redirected
-                    to checkout after creating.</p>
+                <p class="text-[var(--color-text-light)] mt-1">Create a new listing for your steer. Your listing will be published immediately.</p>
             </div>
 
             <form method="POST" action="{{ route('steers.store') }}" enctype="multipart/form-data"
@@ -94,7 +93,7 @@
                 <div class="flex justify-end pt-6 border-t border-[var(--color-border)]">
                     <a href="{{ route('dashboard') }}" class="btn-outline mr-4">Cancel</a>
                     <button type="submit" class="btn-primary">
-                        Create Listing & Subscribe
+                        Create Listing
                     </button>
                 </div>
             </form>

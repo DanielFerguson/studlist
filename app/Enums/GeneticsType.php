@@ -14,10 +14,3 @@ enum GeneticsType: string
             ->toArray();
     }
 }
-
-
-
-
-
-
-

@@ -68,14 +68,14 @@ class SteerListingController extends Controller
             'description' => $validated['description'] ?? null,
             'started_on_feed' => $validated['started_on_feed'] ?? false,
             'price' => $validated['price'] ?? null,
+            'status' => 'active',
         ]);
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
 
-        // Redirect to checkout to immediately subscribe to the listing
-        return redirect()->route('subscription.checkout', ['steer' => $steer->id])
-            ->with('success', 'Steer listing created successfully! Redirecting to checkout...');
+        return redirect()->route('dashboard')
+            ->with('success', 'Steer listing created successfully! Your listing is now live.');
     }
 
     /**

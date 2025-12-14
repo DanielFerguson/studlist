@@ -70,10 +70,3 @@ class StoreServiceListingRequest extends FormRequest
         });
     }
 }
-
-
-
-
-
-
-

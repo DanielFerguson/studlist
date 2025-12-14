@@ -4,7 +4,7 @@ use App\Models\SteerListing;
 use App\Models\User;
 
 describe('Steer Listing Creation Integration', function () {
-    test('complete user journey from creation to checkout works correctly', function () {
+    test('complete user journey from creation to dashboard works correctly', function () {
         $user = User::factory()->create();
 
         $steerData = [
@@ -27,33 +27,25 @@ describe('Steer Listing Creation Integration', function () {
         $createResponse = $this->actingAs($user)
             ->post('/steers', $steerData);
 
-        // Should redirect to checkout
+        // Should redirect to dashboard with success message
         $createResponse->assertRedirect()
-            ->assertSessionHas('success', 'Steer listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Steer listing created successfully! Your listing is now live.');
 
-        // Step 2: Verify the listing was created as a draft
+        // Step 2: Verify the listing was created as active
         $steer = SteerListing::where('user_id', $user->id)
             ->where('name', 'Premium Angus Steer')
             ->first();
 
         expect($steer)->not->toBeNull();
-        expect($steer->isDraft())->toBeTrue();
-        expect($steer->isActive())->toBeFalse();
+        expect($steer->isActive())->toBeTrue();
+        expect($steer->isDraft())->toBeFalse();
         expect($steer->breed)->toBe('Angus');
         expect($steer->price)->toBe(2500.00);
 
-        // Step 3: Verify redirect URL points to checkout
-        $createResponse->assertRedirect(route('subscription.checkout', ['steer' => $steer->id]));
+        // Step 3: Verify redirect URL points to dashboard
+        $createResponse->assertRedirect(route('dashboard'));
 
-        // Step 4: Follow the redirect to checkout (simulating what happens in browser)
-        $checkoutResponse = $this->actingAs($user)
-            ->get("/subscriptions/checkout/{$steer->id}");
-
-        // In testing environment, should redirect back to dashboard with success message
-        $checkoutResponse->assertRedirect('/dashboard')
-            ->assertSessionHas('success', 'Test checkout initiated successfully.');
-
-        // Step 5: Verify the steer can still be found on dashboard
+        // Step 4: Verify the steer can be found on dashboard
         $dashboardResponse = $this->actingAs($user)
             ->get('/dashboard');
 
@@ -61,11 +53,11 @@ describe('Steer Listing Creation Integration', function () {
             ->assertSee('Premium Angus Steer');
     });
 
-    test('listing persists even if user navigates away before completing checkout', function () {
+    test('listing is immediately active after creation', function () {
         $user = User::factory()->create();
 
         $steerData = [
-            'name' => 'Test Steer for Persistence',
+            'name' => 'Test Steer for Active',
             'dob' => '2023-01-10',
             'breed' => 'Hereford',
             'colour' => 'Red',
@@ -78,21 +70,20 @@ describe('Steer Listing Creation Integration', function () {
             ->post('/steers', $steerData)
             ->assertRedirect();
 
-        // Simulate user navigating away by going directly to dashboard
+        // Verify the listing on dashboard
         $dashboardResponse = $this->actingAs($user)
             ->get('/dashboard');
 
-        // The listing should still be there as a draft
         $dashboardResponse->assertOk()
-            ->assertSee('Test Steer for Persistence');
+            ->assertSee('Test Steer for Active');
 
-        // Verify it's still a draft in the database
+        // Verify it's active in the database
         $steer = SteerListing::where('user_id', $user->id)
-            ->where('name', 'Test Steer for Persistence')
+            ->where('name', 'Test Steer for Active')
             ->first();
 
         expect($steer)->not->toBeNull();
-        expect($steer->isDraft())->toBeTrue();
-        expect($steer->status)->toBe('draft');
+        expect($steer->isActive())->toBeTrue();
+        expect($steer->status)->toBe('active');
     });
 });

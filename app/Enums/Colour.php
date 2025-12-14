@@ -32,10 +32,3 @@ enum Colour: string
             ->toArray();
     }
 }
-
-
-
-
-
-
-

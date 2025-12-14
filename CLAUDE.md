@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-StudList is a marketplace application for cattle listings, allowing users to advertise steers, studs, genetics, equipment, and services. Users create listings and pay a monthly subscription ($15/month) via Stripe to keep their listings visible to buyers.
+StudList is a marketplace application for cattle listings, allowing users to advertise steers, studs, genetics, equipment, and services. Users can create listings which are immediately published and visible to buyers.
+
+Note: All listing types are currently free to post. Subscription infrastructure exists for future use.
 
 More information about the project can be found in the @README.md file.
 
@@ -121,10 +123,10 @@ php artisan test:subscription {user_id} {steer_id}
 ### Database Schema
 
 - **Users**: Standard Laravel auth
-- **Listings**: 
+- **Listings**:
   - `steer_listings`: Cattle for sale
   - `stud_listings`: Breeding bulls
-  - Status: `draft` (unpaid) or `active` (subscribed)
+  - Status: `draft`, `active`, or `cancelled`
 - **Subscriptions**: Laravel Cashier tables
   - `subscriptions`: Active subscriptions
   - `subscription_items`: Subscription line items
@@ -163,13 +165,18 @@ export default function PageName({ data }) {
 - Images stored in `storage/app/public/`
 - Symlinked to `public/storage/`
 
-## Subscription Flow
+## Listing Flow
 
-1. User creates listing (status: `draft`)
-2. User clicks subscribe → Redirected to Stripe Checkout
-3. Payment success → Webhook updates listing to `active`
-4. Monthly billing handled by Stripe
-5. User can cancel/pause via billing portal
+1. User creates listing (status: `active` - immediately published)
+2. Listing is visible to buyers on the public site
+
+## Subscription Flow (Legacy)
+
+Subscription infrastructure is preserved for future use:
+1. User can subscribe to a listing via Stripe Checkout
+2. Payment success → Webhook updates listing status
+3. Monthly billing handled by Stripe
+4. User can cancel/pause via billing portal
 
 ## Important Configuration
 
@@ -201,14 +208,14 @@ Key variables to configure:
 
 ✅ Implemented:
 - User authentication
-- Steer listings (CRUD + subscriptions)
-- Stud listings (CRUD + subscriptions)
-- Stripe payment integration
+- Steer listings (CRUD, free to post)
+- Stud listings (CRUD, free to post)
+- Genetics listings (free to post)
+- Show equipment listings (free to post)
+- Services listings (free to post)
+- Stripe payment integration (preserved for future use)
 - Stripe webhooks (for both Steer and Stud listings)
 - Basic dashboard
-- Genetics listings (free)
-- Show equipment listings (free)
-- Services listings (free)
 - Admin panel with Filament
 
 🚧 Planned:

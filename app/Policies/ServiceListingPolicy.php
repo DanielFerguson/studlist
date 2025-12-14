@@ -68,10 +68,3 @@ class ServiceListingPolicy
         return false;
     }
 }
-
-
-
-
-
-
-

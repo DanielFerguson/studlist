@@ -326,4 +326,3 @@ class PublicPageController extends Controller
         ];
     }
 }
-

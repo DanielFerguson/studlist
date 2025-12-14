@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\SteerListing;
-use App\Models\StudListing;
 use App\Models\User;
 
 describe('Homepage', function () {

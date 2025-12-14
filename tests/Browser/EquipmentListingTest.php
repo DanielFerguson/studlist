@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\ShowEquipmentListing;
+use App\Models\User;
 
 describe('Equipment Listing Creation', function () {
     it('can view the create equipment listing form', function () {

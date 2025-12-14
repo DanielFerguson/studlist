@@ -81,4 +81,3 @@ test('guests cannot access contact settings', function () {
 
     $response->assertRedirect('/login');
 });
-

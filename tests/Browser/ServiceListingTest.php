@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\ServiceListing;
+use App\Models\User;
 
 describe('Service Listing Creation', function () {
     it('can view the create service listing form', function () {

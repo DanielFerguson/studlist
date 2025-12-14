@@ -24,19 +24,18 @@ beforeEach(function () {
 });
 
 describe('Complete Payment Flow using Test Utilities', function () {
-    test('full lifecycle: create, subscribe, webhook, cancel', function () {
-        // Step 1: Create user and listing using helper
+    test('full lifecycle: create draft, subscribe, webhook, cancel', function () {
+        // Step 1: Create user and draft listing directly
+        // Note: New listings are now created as active by default (free listings)
+        // This test verifies the subscription flow still works for draft listings
         $user = $this->createUserWithStripeId();
-        $listingData = $this->getValidListingData('steer');
 
-        // Step 2: Create listing
-        $response = $this->actingAs($user)
-            ->post($this->getListingCreateRoute('steer'), $listingData);
+        // Create a draft listing directly to test subscription flow
+        $steer = SteerListing::factory()->draft()->create([
+            'user_id' => $user->id,
+            'name' => 'Test Steer for Subscription',
+        ]);
 
-        $response->assertRedirect();
-        $this->assertListingCreated('steer', $user, ['name' => $listingData['name']]);
-
-        $steer = SteerListing::where('user_id', $user->id)->latest()->first();
         $this->assertListingIsDraft($steer);
 
         // Step 3: Initiate subscription checkout

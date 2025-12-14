@@ -4,7 +4,7 @@ use App\Models\StudListing;
 use App\Models\User;
 
 describe('Stud Listing Creation Integration', function () {
-    test('complete user journey from creation to checkout works correctly', function () {
+    test('complete user journey from creation to dashboard works correctly', function () {
         $user = User::factory()->create();
 
         $studData = [
@@ -27,34 +27,26 @@ describe('Stud Listing Creation Integration', function () {
         $createResponse = $this->actingAs($user)
             ->post('/studs', $studData);
 
-        // Should redirect to checkout
+        // Should redirect to dashboard with success message
         $createResponse->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
-        // Step 2: Verify the listing was created as a draft
+        // Step 2: Verify the listing was created as active
         $stud = StudListing::where('user_id', $user->id)
             ->where('name', 'Elite Angus Bull')
             ->first();
 
         expect($stud)->not->toBeNull();
-        expect($stud->isDraft())->toBeTrue();
-        expect($stud->isActive())->toBeFalse();
+        expect($stud->isActive())->toBeTrue();
+        expect($stud->isDraft())->toBeFalse();
         expect($stud->breed)->toBe('Angus');
         expect($stud->tattoo_number)->toBe('EA123');
         expect($stud->registration_link)->toBe('https://example.com/registration/EA123');
 
-        // Step 3: Verify redirect URL points to checkout
-        $createResponse->assertRedirect(route('subscription.checkout-stud', ['stud' => $stud->id]));
+        // Step 3: Verify redirect URL points to dashboard
+        $createResponse->assertRedirect(route('dashboard'));
 
-        // Step 4: Follow the redirect to checkout (simulating what happens in browser)
-        $checkoutResponse = $this->actingAs($user)
-            ->get("/subscriptions/checkout-stud/{$stud->id}");
-
-        // In testing environment, should redirect back to dashboard with success message
-        $checkoutResponse->assertRedirect('/dashboard')
-            ->assertSessionHas('success', 'Test checkout initiated successfully.');
-
-        // Step 5: Verify the stud can still be found on dashboard
+        // Step 4: Verify the stud can be found on dashboard
         $dashboardResponse = $this->actingAs($user)
             ->get('/dashboard');
 
@@ -62,11 +54,11 @@ describe('Stud Listing Creation Integration', function () {
             ->assertSee('Elite Angus Bull');
     });
 
-    test('listing persists even if user navigates away before completing checkout', function () {
+    test('listing is immediately active after creation', function () {
         $user = User::factory()->create();
 
         $studData = [
-            'name' => 'Test Stud for Persistence',
+            'name' => 'Test Stud for Active',
             'dob' => '2019-01-10',
             'breed' => 'Hereford',
             'colour' => 'Red',
@@ -80,22 +72,21 @@ describe('Stud Listing Creation Integration', function () {
             ->post('/studs', $studData)
             ->assertRedirect();
 
-        // Simulate user navigating away by going directly to dashboard
+        // Verify the listing on dashboard
         $dashboardResponse = $this->actingAs($user)
             ->get('/dashboard');
 
-        // The listing should still be there as a draft
         $dashboardResponse->assertOk()
-            ->assertSee('Test Stud for Persistence');
+            ->assertSee('Test Stud for Active');
 
-        // Verify it's still a draft in the database
+        // Verify it's active in the database
         $stud = StudListing::where('user_id', $user->id)
-            ->where('name', 'Test Stud for Persistence')
+            ->where('name', 'Test Stud for Active')
             ->first();
 
         expect($stud)->not->toBeNull();
-        expect($stud->isDraft())->toBeTrue();
-        expect($stud->status)->toBe('draft');
+        expect($stud->isActive())->toBeTrue();
+        expect($stud->status)->toBe('active');
         expect($stud->tattoo_number)->toBe('HF789');
     });
 
@@ -116,7 +107,7 @@ describe('Stud Listing Creation Integration', function () {
             ->post('/studs', $studData);
 
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
         // Verify the listing was created
         $stud = StudListing::where('user_id', $user->id)
@@ -129,6 +120,7 @@ describe('Stud Listing Creation Integration', function () {
         expect($stud->email_contact)->toBeNull();
         expect($stud->tattoo_number)->toBeNull();
         expect($stud->registration_link)->toBeNull();
+        expect($stud->isActive())->toBeTrue();
     });
 
     test('stud listing creation with email only works', function () {
@@ -148,7 +140,7 @@ describe('Stud Listing Creation Integration', function () {
             ->post('/studs', $studData);
 
         $response->assertRedirect()
-            ->assertSessionHas('success', 'Stud listing created successfully! Redirecting to checkout...');
+            ->assertSessionHas('success', 'Stud listing created successfully! Your listing is now live.');
 
         // Verify the listing was created
         $stud = StudListing::where('user_id', $user->id)
@@ -159,6 +151,7 @@ describe('Stud Listing Creation Integration', function () {
         expect($stud->breed)->toBe('Limousin');
         expect($stud->email_contact)->toBe('breeder@example.com');
         expect($stud->phone_contact)->toBeNull();
+        expect($stud->isActive())->toBeTrue();
     });
 
     test('user can edit stud listing after creation', function () {

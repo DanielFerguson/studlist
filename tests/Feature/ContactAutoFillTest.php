@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\SteerListing;
-use App\Models\GeneticsListing;
 
 describe('Contact Defaults Method', function () {
     test('getContactDefaults returns saved contact info', function () {
@@ -182,10 +180,3 @@ describe('Contact Auto-fill on Create Form', function () {
         $response->assertSee('value="N555555"', false);
     });
 });
-
-
-
-
-
-
-

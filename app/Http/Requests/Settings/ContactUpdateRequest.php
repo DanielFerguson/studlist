@@ -36,10 +36,3 @@ class ContactUpdateRequest extends FormRequest
         ];
     }
 }
-
-
-
-
-
-
-

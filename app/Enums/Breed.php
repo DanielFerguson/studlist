@@ -40,10 +40,3 @@ enum Breed: string
             ->toArray();
     }
 }
-
-
-
-
-
-
-

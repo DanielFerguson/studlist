@@ -22,10 +22,3 @@ enum ListingStatus: string
             ->toArray();
     }
 }
-
-
-
-
-
-
-

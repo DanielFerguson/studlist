@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\User;
+use App\Models\GeneticsListing;
+use App\Models\ServiceListing;
+use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
-use App\Models\GeneticsListing;
-use App\Models\ShowEquipmentListing;
-use App\Models\ServiceListing;
+use App\Models\User;
 
 describe('Dashboard Access', function () {
     it('requires authentication to access dashboard', function () {

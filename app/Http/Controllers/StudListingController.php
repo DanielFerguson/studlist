@@ -66,14 +66,14 @@ class StudListingController extends Controller
             'phone_contact' => $validated['phone_contact'] ?? null,
             'pic_number' => $validated['pic_number'] ?? null,
             'description' => $validated['description'] ?? null,
+            'status' => 'active',
         ]);
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
 
-        // Redirect to checkout to immediately subscribe to the listing
-        return redirect()->route('subscription.checkout-stud', ['stud' => $stud->id])
-            ->with('success', 'Stud listing created successfully! Redirecting to checkout...');
+        return redirect()->route('dashboard')
+            ->with('success', 'Stud listing created successfully! Your listing is now live.');
     }
 
     /**

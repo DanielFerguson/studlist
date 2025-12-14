@@ -69,9 +69,9 @@
             </div>
             <div class="p-6 md:p-8 text-center">
                 <div class="font-heading text-3xl md:text-4xl font-bold text-[var(--color-primary-light)]">
-                    $15
+                    Free
                 </div>
-                <div class="text-sm text-[var(--color-text-light)] mt-1">Per Month</div>
+                <div class="text-sm text-[var(--color-text-light)] mt-1">To List</div>
             </div>
         </div>
     </section>
@@ -319,7 +319,7 @@
 
             <div class="text-center mt-12">
                 <a href="{{ route('register') }}" class="inline-flex items-center gap-3 btn-primary text-lg px-10 py-5">
-                    Get Started for $15/month
+                    Get Started for Free
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7l5 5m0 0l-5 5m5-5H6"></path>

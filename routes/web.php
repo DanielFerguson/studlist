@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->map(function ($listing) {
                 $listing->subscription_info = $listing->laravelSubscription();
                 $listing->type = 'steer';
+
                 return $listing;
             });
 
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->map(function ($listing) {
                 $listing->subscription_info = $listing->laravelSubscription();
                 $listing->type = 'stud';
+
                 return $listing;
             });
 
@@ -99,5 +101,5 @@ Route::get('/genetics/{genetic}', [PublicPageController::class, 'showGenetics'])
 Route::get('/equipment/{equipment}', [PublicPageController::class, 'showEquipment'])->name('equipment.show');
 Route::get('/services/{service}', [PublicPageController::class, 'showService'])->name('services.show');
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
