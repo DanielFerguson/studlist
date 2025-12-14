@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
+use PostHog\PostHog;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +24,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Cashier::useCustomerModel(User::class);
         Cashier::calculateTaxes();
+
+        if (config('services.posthog.api_key')) {
+            PostHog::init(config('services.posthog.api_key'), [
+                'host' => config('services.posthog.host'),
+            ]);
+        }
     }
 }
