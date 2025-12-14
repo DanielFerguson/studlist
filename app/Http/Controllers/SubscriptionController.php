@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\SteerListing;
 use App\Models\StudListing;
+use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SubscriptionController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
     /**
      * Create a Stripe checkout session for a steer listing subscription
      */
@@ -60,6 +64,8 @@ class SubscriptionController extends Controller
                         'steer_listing_id' => $steer->id,
                     ],
                 ]);
+
+            $this->analytics->trackCheckoutInitiated($user, $steer, 'steer');
 
             return redirect()->away($checkout->url);
         } catch (\Exception $e) {
@@ -134,6 +140,8 @@ class SubscriptionController extends Controller
                     'stripe_subscription_id' => $session->subscription,
                 ]);
 
+                $this->analytics->trackSubscriptionCreated($user, $steer, 'steer');
+
                 return redirect()->route('dashboard')->with('success', 'Subscription created successfully! Your listing is now active.');
             }
 
@@ -172,6 +180,8 @@ class SubscriptionController extends Controller
                 }
 
                 $steer->update(['status' => 'cancelled']);
+
+                $this->analytics->trackSubscriptionCancelled($user, $steer, 'steer');
 
                 return redirect()->route('dashboard')->with('success', 'Subscription cancelled successfully.');
             }
@@ -262,6 +272,8 @@ class SubscriptionController extends Controller
                     ],
                 ]);
 
+            $this->analytics->trackCheckoutInitiated($user, $stud, 'stud');
+
             return redirect()->away($checkout->url);
         } catch (\Exception $e) {
             Log::error('Subscription checkout error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
@@ -335,6 +347,8 @@ class SubscriptionController extends Controller
                     'stripe_subscription_id' => $session->subscription,
                 ]);
 
+                $this->analytics->trackSubscriptionCreated($user, $stud, 'stud');
+
                 return redirect()->route('dashboard')->with('success', 'Subscription created successfully! Your listing is now active.');
             }
 
@@ -378,6 +392,8 @@ class SubscriptionController extends Controller
                 }
 
                 $stud->update(['status' => 'cancelled']);
+
+                $this->analytics->trackSubscriptionCancelled($user, $stud, 'stud');
 
                 return redirect()->route('dashboard')->with('success', 'Subscription cancelled successfully.');
             }

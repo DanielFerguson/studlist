@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGeneticsListingRequest;
 use App\Http\Requests\UpdateGeneticsListingRequest;
 use App\Models\GeneticsListing;
+use App\Services\AnalyticsService;
 use Illuminate\View\View;
 
 class GeneticsListingController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -69,6 +74,8 @@ class GeneticsListingController extends Controller
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
+
+        $this->analytics->trackListingCreated($request->user(), $genetics, 'genetics');
 
         // Redirect to dashboard - genetics listings are free
         return redirect()->route('dashboard')
@@ -134,6 +141,8 @@ class GeneticsListingController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
+        $this->analytics->trackListingUpdated($request->user(), $genetic, 'genetics');
+
         return redirect()->route('dashboard')->with('success', 'Genetics listing updated successfully!');
     }
 
@@ -143,6 +152,8 @@ class GeneticsListingController extends Controller
     public function destroy(GeneticsListing $genetic)
     {
         $this->authorize('delete', $genetic);
+
+        $this->analytics->trackListingDeleted(auth()->user(), $genetic, 'genetics');
 
         $genetic->delete();
 

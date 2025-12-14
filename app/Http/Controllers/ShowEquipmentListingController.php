@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreShowEquipmentListingRequest;
 use App\Http\Requests\UpdateShowEquipmentListingRequest;
 use App\Models\ShowEquipmentListing;
+use App\Services\AnalyticsService;
 use Illuminate\View\View;
 
 class ShowEquipmentListingController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -64,6 +69,8 @@ class ShowEquipmentListingController extends Controller
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
+
+        $this->analytics->trackListingCreated($request->user(), $showEquipment, 'equipment');
 
         // Redirect to dashboard - show equipment listings are free
         return redirect()->route('dashboard')
@@ -124,6 +131,8 @@ class ShowEquipmentListingController extends Controller
             'email_contact' => $validated['email_contact'] ?? null,
         ]);
 
+        $this->analytics->trackListingUpdated($request->user(), $showEquipment, 'equipment');
+
         return redirect()->route('dashboard')->with('success', 'Show equipment listing updated successfully!');
     }
 
@@ -133,6 +142,8 @@ class ShowEquipmentListingController extends Controller
     public function destroy(ShowEquipmentListing $showEquipment)
     {
         $this->authorize('delete', $showEquipment);
+
+        $this->analytics->trackListingDeleted(auth()->user(), $showEquipment, 'equipment');
 
         $showEquipment->delete();
 

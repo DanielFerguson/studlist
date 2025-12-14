@@ -7,10 +7,14 @@ use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
+use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 
 class PublicPageController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
     /**
      * Display the homepage.
      */
@@ -68,6 +72,12 @@ class PublicPageController extends Controller
         $filters = $request->only(['search', 'category', 'breed', 'location', 'min_price', 'max_price', 'sort']);
         $listings = $this->getListings($request);
 
+        $this->analytics->trackSearchPerformed(
+            auth()->user(),
+            $filters,
+            $listings['total']
+        );
+
         return view('public.search', [
             'filters' => $filters,
             'listings' => $listings,
@@ -81,6 +91,8 @@ class PublicPageController extends Controller
     {
         abort_if($steer->status !== 'active', 404);
 
+        $this->analytics->trackListingViewed($steer, 'steer', auth()->user());
+
         return view('public.listings.steer', [
             'listing' => $steer->load('user'),
         ]);
@@ -93,6 +105,8 @@ class PublicPageController extends Controller
     {
         abort_if($stud->status !== 'active', 404);
 
+        $this->analytics->trackListingViewed($stud, 'stud', auth()->user());
+
         return view('public.listings.stud', [
             'listing' => $stud->load('user'),
         ]);
@@ -103,6 +117,8 @@ class PublicPageController extends Controller
      */
     public function showGenetics(GeneticsListing $genetic)
     {
+        $this->analytics->trackListingViewed($genetic, 'genetics', auth()->user());
+
         return view('public.listings.genetics', [
             'listing' => $genetic->load('user'),
         ]);
@@ -113,6 +129,8 @@ class PublicPageController extends Controller
      */
     public function showEquipment(ShowEquipmentListing $equipment)
     {
+        $this->analytics->trackListingViewed($equipment, 'equipment', auth()->user());
+
         return view('public.listings.equipment', [
             'listing' => $equipment->load('user'),
         ]);
@@ -123,6 +141,8 @@ class PublicPageController extends Controller
      */
     public function showService(ServiceListing $service)
     {
+        $this->analytics->trackListingViewed($service, 'service', auth()->user());
+
         return view('public.listings.service', [
             'listing' => $service->load('user'),
         ]);

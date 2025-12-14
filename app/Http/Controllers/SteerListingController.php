@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSteerListingRequest;
 use App\Http\Requests\UpdateSteerListingRequest;
 use App\Models\SteerListing;
+use App\Services\AnalyticsService;
 use Illuminate\View\View;
 
 class SteerListingController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -73,6 +78,8 @@ class SteerListingController extends Controller
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
+
+        $this->analytics->trackListingCreated($request->user(), $steer, 'steer');
 
         return redirect()->route('dashboard')
             ->with('success', 'Steer listing created successfully! Your listing is now live.');
@@ -142,6 +149,8 @@ class SteerListingController extends Controller
             'price' => $validated['price'] ?? null,
         ]);
 
+        $this->analytics->trackListingUpdated($request->user(), $steer, 'steer');
+
         return redirect()->route('dashboard')->with('success', 'Steer listing updated successfully!');
     }
 
@@ -185,6 +194,8 @@ class SteerListingController extends Controller
                 ]);
             }
         }
+
+        $this->analytics->trackListingDeleted(auth()->user(), $steer, 'steer');
 
         $steer->delete();
 

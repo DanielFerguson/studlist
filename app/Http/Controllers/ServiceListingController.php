@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreServiceListingRequest;
 use App\Http\Requests\UpdateServiceListingRequest;
 use App\Models\ServiceListing;
+use App\Services\AnalyticsService;
 use Illuminate\View\View;
 
 class ServiceListingController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -45,7 +49,7 @@ class ServiceListingController extends Controller
         $links = array_filter($validated['links'] ?? [], fn ($link) => ! empty($link));
 
         // Create the listing
-        ServiceListing::create([
+        $service = ServiceListing::create([
             'user_id' => $request->user()->id,
             'type' => $validated['type'],
             'abn' => $validated['abn'] ?? null,
@@ -60,6 +64,8 @@ class ServiceListingController extends Controller
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
+
+        $this->analytics->trackListingCreated($request->user(), $service, 'service');
 
         // Redirect to dashboard - service listings are free
         return redirect()->route('dashboard')
@@ -115,6 +121,8 @@ class ServiceListingController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
+        $this->analytics->trackListingUpdated($request->user(), $service, 'service');
+
         return redirect()->route('dashboard')->with('success', 'Service listing updated successfully!');
     }
 
@@ -124,6 +132,8 @@ class ServiceListingController extends Controller
     public function destroy(ServiceListing $service)
     {
         $this->authorize('delete', $service);
+
+        $this->analytics->trackListingDeleted(auth()->user(), $service, 'service');
 
         $service->delete();
 

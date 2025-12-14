@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreStudListingRequest;
 use App\Http\Requests\UpdateStudListingRequest;
 use App\Models\StudListing;
+use App\Services\AnalyticsService;
 use Illuminate\View\View;
 
 class StudListingController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analytics
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -71,6 +76,8 @@ class StudListingController extends Controller
 
         // Save contact info for future listings
         $request->user()->saveContactDefaults($validated);
+
+        $this->analytics->trackListingCreated($request->user(), $stud, 'stud');
 
         return redirect()->route('dashboard')
             ->with('success', 'Stud listing created successfully! Your listing is now live.');
@@ -140,6 +147,8 @@ class StudListingController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
+        $this->analytics->trackListingUpdated($request->user(), $stud, 'stud');
+
         return redirect()->route('dashboard')->with('success', 'Stud listing updated successfully!');
     }
 
@@ -183,6 +192,8 @@ class StudListingController extends Controller
                 ]);
             }
         }
+
+        $this->analytics->trackListingDeleted(auth()->user(), $stud, 'stud');
 
         $stud->delete();
 
