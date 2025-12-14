@@ -36,3 +36,4 @@ class ServiceListing extends Model
         return $this->belongsTo(User::class);
     }
 }
+

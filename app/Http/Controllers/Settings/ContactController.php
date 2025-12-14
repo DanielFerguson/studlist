@@ -30,3 +30,4 @@ class ContactController extends Controller
         return to_route('contact.edit')->with('success', 'Contact information updated successfully.');
     }
 }
+

@@ -34,3 +34,4 @@ enum AustralianState: string
             ->toArray();
     }
 }
+

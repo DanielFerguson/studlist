@@ -9,3 +9,4 @@ class CreateServiceListing extends CreateRecord
 {
     protected static string $resource = ServiceListingResource::class;
 }
+
