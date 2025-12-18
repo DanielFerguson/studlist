@@ -109,6 +109,16 @@ class AnalyticsService
         ]);
     }
 
+    public function trackSearchNoResults(?User $user, array $filters): void
+    {
+        $this->track('search_no_results', $user, [
+            'query' => $filters['search'] ?? null,
+            'categories' => $filters['categories'] ?? [],
+            'breed' => $filters['breed'] ?? null,
+            'location' => $filters['location'] ?? null,
+        ]);
+    }
+
     public function trackCheckoutInitiated(User $user, Model $listing, string $listingType): void
     {
         $this->track('checkout_initiated', $user, [

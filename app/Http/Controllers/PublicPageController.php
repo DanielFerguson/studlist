@@ -79,6 +79,10 @@ class PublicPageController extends Controller
             $listings['total']
         );
 
+        if ($listings['total'] === 0) {
+            $this->analytics->trackSearchNoResults(auth()->user(), $filters);
+        }
+
         return view('public.search', [
             'filters' => $filters,
             'listings' => $listings,
