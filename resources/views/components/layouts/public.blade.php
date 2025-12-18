@@ -129,6 +129,9 @@
                     rgba(85, 107, 47, 0.4) 100%);
         }
     </style>
+
+    <!-- PostHog Analytics -->
+    <x-posthog />
 </head>
 
 <body class="min-h-screen flex flex-col texture-overlay">
