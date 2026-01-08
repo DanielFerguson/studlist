@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             StudListingSeeder::class,
             GeneticsListingSeeder::class,
             ShowEquipmentListingSeeder::class,
+            HayListingSeeder::class,
         ]);
 
         $this->command->info('');
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('- Stud Listings: '.\App\Models\StudListing::count());
         $this->command->info('- Genetics Listings: '.\App\Models\GeneticsListing::count());
         $this->command->info('- Show Equipment Listings: '.\App\Models\ShowEquipmentListing::count());
+        $this->command->info('- Hay Listings: '.\App\Models\HayListing::count());
         $this->command->info('');
         $this->command->info('You can log in with:');
         $this->command->info('Admin: admin@studlist.com / password');

@@ -93,6 +93,11 @@
             color: white;
         }
 
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
         /* Card Styles */
         .card-rustic {
             background: white;
@@ -129,6 +134,8 @@
                     rgba(85, 107, 47, 0.4) 100%);
         }
     </style>
+
+    @stack('styles')
 
     <!-- PostHog Analytics -->
     <x-posthog />

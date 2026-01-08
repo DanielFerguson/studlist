@@ -40,4 +40,8 @@ return [
         'host' => env('POSTHOG_HOST', 'https://us.i.posthog.com'),
     ],
 
+    'mapbox' => [
+        'token' => env('MAPBOX_TOKEN'),
+    ],
+
 ];

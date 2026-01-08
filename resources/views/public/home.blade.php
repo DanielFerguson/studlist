@@ -51,7 +51,7 @@
             class="bg-white rounded-2xl shadow-2xl border border-[var(--color-border)] grid grid-cols-2 md:grid-cols-4 divide-x divide-[var(--color-border)]">
             <div class="p-6 md:p-8 text-center">
                 <div class="font-heading text-3xl md:text-4xl font-bold text-[var(--color-primary)]">
-                    {{ $steerListings->count() + $studListings->count() }}+
+                    {{ $steerListings->count() + $studListings->count() + $geneticsListings->count() + $showEquipmentListings->count() + $serviceListings->count() + $hayListings->count() }}+
                 </div>
                 <div class="text-sm text-[var(--color-text-light)] mt-1">Active Listings</div>
             </div>
@@ -63,7 +63,7 @@
             </div>
             <div class="p-6 md:p-8 text-center">
                 <div class="font-heading text-3xl md:text-4xl font-bold text-[var(--color-accent)]">
-                    5+
+                    6
                 </div>
                 <div class="text-sm text-[var(--color-text-light)] mt-1">Categories</div>
             </div>
@@ -92,7 +92,7 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 <!-- Steers -->
                 <a href="{{ route('search', ['category' => ['steers']]) }}" class="group">
                     <div class="card-rustic aspect-square flex flex-col items-center justify-center p-6 text-center">
@@ -190,6 +190,26 @@
                             class="font-heading font-semibold text-[var(--color-text)] group-hover:text-teal-600 transition-colors">
                             Services</h3>
                         <p class="text-xs text-[var(--color-text-light)] mt-1">{{ $serviceListings->count() }} listings
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Hay -->
+                <a href="{{ route('hay.index') }}" class="group">
+                    <div class="card-rustic aspect-square flex flex-col items-center justify-center p-6 text-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-yellow-600/10 flex items-center justify-center mb-4 group-hover:bg-yellow-600 transition-all">
+                            <svg class="w-8 h-8 text-yellow-600 group-hover:text-white transition-colors" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3
+                            class="font-heading font-semibold text-[var(--color-text)] group-hover:text-yellow-600 transition-colors">
+                            Hay</h3>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">{{ $hayListings->count() }} listings
                         </p>
                     </div>
                 </a>

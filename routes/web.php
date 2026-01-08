@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GeneticsListingController;
+use App\Http\Controllers\HayListingController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\ServiceListingController;
 use App\Http\Controllers\ShowEquipmentListingController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\StudListingController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use App\Models\GeneticsListing;
+use App\Models\HayListing;
 use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
@@ -61,12 +63,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()
             ->get();
 
+        $hayListings = HayListing::where('user_id', auth()->user()->id)
+            ->latest()
+            ->get();
+
         return view('dashboard.index', [
             'steerListings' => $steerListings,
             'studListings' => $studListings,
             'geneticsListings' => $geneticsListings,
             'showEquipmentListings' => $showEquipmentListings,
             'serviceListings' => $serviceListings,
+            'hayListings' => $hayListings,
         ]);
     })->name('dashboard');
 
@@ -75,6 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('genetics', GeneticsListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('show-equipment', ShowEquipmentListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('services', ServiceListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('hay', HayListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
     // Subscription routes
     Route::prefix('subscriptions')->name('subscription.')->group(function () {
@@ -100,6 +108,8 @@ Route::get('/studs/{stud}', [PublicPageController::class, 'showStud'])->name('st
 Route::get('/genetics/{genetic}', [PublicPageController::class, 'showGenetics'])->name('genetics.show');
 Route::get('/equipment/{equipment}', [PublicPageController::class, 'showEquipment'])->name('equipment.show');
 Route::get('/services/{service}', [PublicPageController::class, 'showService'])->name('services.show');
+Route::get('/hay', [PublicPageController::class, 'hayIndex'])->name('hay.index');
+Route::get('/hay/{hay}', [PublicPageController::class, 'showHay'])->name('hay.show');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

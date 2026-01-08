@@ -27,6 +27,10 @@
                     class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Genetics
                 </a>
+                <a href="{{ route('hay.index') }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                    Hay
+                </a>
                 <a href="{{ route('about') }}"
                     class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     About
@@ -84,6 +88,10 @@
                 <a href="{{ route('search', ['category' => ['genetics']]) }}"
                     class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Genetics
+                </a>
+                <a href="{{ route('hay.index') }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                    Hay
                 </a>
                 <a href="{{ route('about') }}"
                     class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">

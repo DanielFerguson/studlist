@@ -22,6 +22,8 @@
 
     @vite(['resources/css/app.css'])
 
+    @stack('styles')
+
     <style>
         :root {
             /* Rustic Color Palette */
@@ -48,6 +50,11 @@
         }
 
         /* Rustic Button Styles */
+        /* Alpine.js cloak - hide elements until Alpine initializes */
+        [x-cloak] {
+            display: none !important;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
             color: white;
@@ -56,6 +63,9 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(139, 69, 19, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary:hover {
@@ -71,6 +81,9 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(85, 107, 47, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-secondary:hover {
@@ -86,11 +99,19 @@
             font-weight: 600;
             transition: all 0.3s ease;
             background: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-outline:hover {
             background: var(--color-primary);
             color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
         }
 
         /* Card Styles */
@@ -143,6 +164,9 @@
 
     <!-- Footer -->
     @include('components.public.footer')
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('scripts')
 </body>

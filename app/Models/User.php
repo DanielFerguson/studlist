@@ -107,6 +107,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the hay listings for this user.
+     */
+    public function hayListings()
+    {
+        return $this->hasMany(\App\Models\HayListing::class);
+    }
+
+    /**
      * Get the subscription for a specific steer listing.
      */
     public function subscriptionForSteer(SteerListing $steer)

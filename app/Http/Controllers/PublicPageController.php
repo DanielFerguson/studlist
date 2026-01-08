@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\GeneticsListing;
+use App\Models\HayListing;
 use App\Models\ServiceListing;
 use App\Models\ShowEquipmentListing;
 use App\Models\SteerListing;
 use App\Models\StudListing;
 use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
-
 class PublicPageController extends Controller
 {
     public function __construct(
@@ -48,12 +48,18 @@ class PublicPageController extends Controller
             ->take(4)
             ->get();
 
+        $hayListings = HayListing::with('user')
+            ->latest()
+            ->take(4)
+            ->get();
+
         return view('public.home', [
             'steerListings' => $steerListings,
             'studListings' => $studListings,
             'geneticsListings' => $geneticsListings,
             'showEquipmentListings' => $showEquipmentListings,
             'serviceListings' => $serviceListings,
+            'hayListings' => $hayListings,
         ]);
     }
 
@@ -154,6 +160,78 @@ class PublicPageController extends Controller
     }
 
     /**
+     * Display the hay listings index with map.
+     */
+    public function hayIndex(Request $request)
+    {
+        $query = HayListing::with('user');
+
+        if ($request->filled('hay_type')) {
+            $query->where('hay_type', $request->hay_type);
+        }
+
+        if ($request->filled('bale_type')) {
+            $query->where('bale_type', $request->bale_type);
+        }
+
+        if ($request->filled('quality_grade')) {
+            $query->where('quality_grade', $request->quality_grade);
+        }
+
+        if ($request->filled('location')) {
+            $query->where('location', 'like', "%{$request->location}%");
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('price_per_bale', '>=', $request->min_price)
+                    ->orWhere('price_per_tonne', '>=', $request->min_price);
+            });
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('price_per_bale', '<=', $request->max_price)
+                    ->orWhere('price_per_tonne', '<=', $request->max_price);
+            });
+        }
+
+        if ($request->has('delivery_available')) {
+            $query->where('delivery_available', true);
+        }
+
+        if ($request->has('test_results')) {
+            $query->where('test_results_available', true);
+        }
+
+        $listings = $query->latest()->paginate(20)->withQueryString();
+
+        $listingsWithCoordinates = HayListing::withCoordinates()->get();
+
+        return view('public.hay.index', [
+            'listings' => $listings,
+            'listingsWithCoordinates' => $listingsWithCoordinates,
+            'filters' => $request->only([
+                'hay_type', 'bale_type', 'quality_grade', 'location',
+                'min_price', 'max_price', 'delivery_available', 'test_results',
+            ]),
+            'mapboxToken' => config('services.mapbox.token'),
+        ]);
+    }
+
+    /**
+     * Display a hay listing.
+     */
+    public function showHay(HayListing $hay)
+    {
+        $this->analytics->trackListingViewed($hay, 'hay', auth()->user());
+
+        return view('public.listings.hay', [
+            'listing' => $hay->load('user'),
+        ]);
+    }
+
+    /**
      * Get filtered listings for search.
      */
     private function getListings(Request $request)
@@ -168,7 +246,7 @@ class PublicPageController extends Controller
         $page = $request->get('page', 1);
 
         if (empty($categories)) {
-            $categories = ['steers', 'studs', 'genetics', 'equipment', 'services'];
+            $categories = ['steers', 'studs', 'genetics', 'equipment', 'services', 'hay'];
         }
 
         $allListings = collect();
@@ -315,6 +393,45 @@ class PublicPageController extends Controller
             });
 
             $allListings = $allListings->concat($services);
+        }
+
+        if (in_array('hay', $categories)) {
+            $hayQuery = HayListing::with('user');
+
+            if ($search) {
+                $hayQuery->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('hay_type', 'like', "%{$search}%");
+                });
+            }
+
+            if ($location) {
+                $hayQuery->where('location', 'like', "%{$location}%");
+            }
+            if ($minPrice) {
+                $hayQuery->where(function ($q) use ($minPrice) {
+                    $q->where('price_per_bale', '>=', $minPrice)
+                        ->orWhere('price_per_tonne', '>=', $minPrice);
+                });
+            }
+            if ($maxPrice) {
+                $hayQuery->where(function ($q) use ($maxPrice) {
+                    $q->where('price_per_bale', '<=', $maxPrice)
+                        ->orWhere('price_per_tonne', '<=', $maxPrice);
+                });
+            }
+
+            $hay = $hayQuery->get()->map(function ($item) {
+                $item->listing_type = 'hay';
+                $item->listing_url = route('hay.show', $item);
+                $item->name = $item->title;
+                $item->price = $item->price_per_bale ?? $item->price_per_tonne;
+
+                return $item;
+            });
+
+            $allListings = $allListings->concat($hay);
         }
 
         // Sort

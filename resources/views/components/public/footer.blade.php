@@ -24,6 +24,8 @@
                             class="text-white/70 hover:text-[var(--color-accent)] transition-colors">Equipment</a></li>
                     <li><a href="{{ route('search', ['category' => ['services']]) }}"
                             class="text-white/70 hover:text-[var(--color-accent)] transition-colors">Services</a></li>
+                    <li><a href="{{ route('hay.index') }}"
+                            class="text-white/70 hover:text-[var(--color-accent)] transition-colors">Hay</a></li>
                 </ul>
             </div>
 

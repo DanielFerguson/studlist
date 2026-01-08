@@ -7,7 +7,7 @@
                     Find Your Perfect Listing
                 </h1>
                 <p class="text-white/80 text-lg max-w-2xl mx-auto">
-                    Browse through our marketplace of quality steers, studs, genetics, equipment and services.
+                    Browse through our marketplace of quality steers, studs, genetics, equipment, services and hay.
                 </p>
             </div>
 
@@ -35,7 +35,7 @@
                         $selectedCategories = $filters['category'] ?? [];
                     @endphp
                     
-                    @foreach(['steers' => 'Steers', 'studs' => 'Studs', 'genetics' => 'Genetics', 'equipment' => 'Equipment', 'services' => 'Services'] as $value => $label)
+                    @foreach(['steers' => 'Steers', 'studs' => 'Studs', 'genetics' => 'Genetics', 'equipment' => 'Equipment', 'services' => 'Services', 'hay' => 'Hay'] as $value => $label)
                         <label class="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer transition-all
                             {{ in_array($value, $selectedCategories) ? 'bg-white text-[var(--color-primary)] shadow-md' : 'bg-white/20 text-white hover:bg-white/30' }}">
                             <input 
