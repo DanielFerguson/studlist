@@ -29,6 +29,7 @@ enum Breed: string
     case Piedmontese = 'Piedmontese';
     case Salers = 'Salers';
     case SouthDevon = 'South Devon';
+    case SquareMeater = 'Square Meater';
     case SpecklePark = 'Speckle Park';
     case TexasLonghorn = 'Texas Longhorn';
     case Other = 'Other';

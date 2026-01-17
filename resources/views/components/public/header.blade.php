@@ -31,6 +31,14 @@
                     class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     Hay
                 </a>
+                <a href="{{ route('search', ['category' => ['equipment']]) }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                    Equipment
+                </a>
+                <a href="{{ route('search', ['category' => ['services']]) }}"
+                    class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                    Services
+                </a>
                 <a href="{{ route('about') }}"
                     class="text-[var(--color-text-light)] hover:text-[var(--color-primary)] font-medium transition-colors">
                     About
@@ -92,6 +100,14 @@
                 <a href="{{ route('hay.index') }}"
                     class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
                     Hay
+                </a>
+                <a href="{{ route('search', ['category' => ['equipment']]) }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                    Equipment
+                </a>
+                <a href="{{ route('search', ['category' => ['services']]) }}"
+                    class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
+                    Services
                 </a>
                 <a href="{{ route('about') }}"
                     class="px-4 py-2 text-[var(--color-text-light)] hover:bg-[var(--color-cream)] rounded-lg transition-colors">
