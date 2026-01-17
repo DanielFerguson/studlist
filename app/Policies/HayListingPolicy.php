@@ -8,6 +8,18 @@ use App\Models\User;
 class HayListingPolicy
 {
     /**
+     * Grant all abilities to admin users.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
