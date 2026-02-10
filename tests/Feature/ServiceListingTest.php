@@ -23,7 +23,7 @@ describe('Service Listing Creation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Fitter',
+                'types' => ['Fitting'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'phone_contact' => '0412345678',
@@ -33,10 +33,12 @@ describe('Service Listing Creation', function () {
 
         $this->assertDatabaseHas('service_listings', [
             'user_id' => $user->id,
-            'type' => 'Fitter',
             'business_name' => 'Test Business',
             'contact_name' => 'John Smith',
         ]);
+
+        $listing = ServiceListing::where('user_id', $user->id)->firstOrFail();
+        expect($listing->types)->toContain('Fitting');
     });
 
     it('users can create a service listing with all fields', function () {
@@ -44,7 +46,7 @@ describe('Service Listing Creation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Photographer',
+                'types' => ['Photography'],
                 'abn' => '12 345 678 901',
                 'business_name' => 'Complete Photography',
                 'contact_name' => 'Jane Doe',
@@ -58,11 +60,13 @@ describe('Service Listing Creation', function () {
 
         $this->assertDatabaseHas('service_listings', [
             'user_id' => $user->id,
-            'type' => 'Photographer',
             'business_name' => 'Complete Photography',
             'contact_name' => 'Jane Doe',
             'email_contact' => 'jane@photography.com',
         ]);
+
+        $listing = ServiceListing::where('user_id', $user->id)->firstOrFail();
+        expect($listing->types)->toContain('Photography');
     });
 
     it('creating service listing redirects to dashboard without subscription', function () {
@@ -70,7 +74,7 @@ describe('Service Listing Creation', function () {
 
         $response = $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Feeder',
+                'types' => ['Feed Supplier'],
                 'business_name' => 'Feed Services',
                 'contact_name' => 'Bob Builder',
                 'phone_contact' => '0411111111',
@@ -100,7 +104,7 @@ describe('Service Listing Viewing', function () {
         $user = User::factory()->create();
         $listing = ServiceListing::factory()->create([
             'user_id' => $user->id,
-            'type' => 'Fitter',
+            'types' => ['Fitting', 'Photography'],
             'business_name' => 'Premium Fitting',
             'contact_name' => 'Expert Fitter',
         ]);
@@ -153,7 +157,7 @@ describe('Service Listing Editing', function () {
 
         $this->actingAs($user)
             ->put(route('services.update', $listing), [
-                'type' => $listing->type,
+                'types' => ['Fitting', 'Photography'],
                 'business_name' => 'Updated Business Name',
                 'contact_name' => $listing->contact_name,
                 'phone_contact' => $listing->phone_contact,
@@ -207,7 +211,7 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Fitter',
+                'types' => ['Fitting'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'locations_covered' => ['NSW'],
@@ -221,13 +225,13 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'InvalidType',
+                'types' => ['InvalidType'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'phone_contact' => '0412345678',
                 'locations_covered' => ['NSW'],
             ])
-            ->assertSessionHasErrors('type');
+            ->assertSessionHasErrors('types.0');
     });
 
     it('service listing validates required fields', function () {
@@ -235,25 +239,25 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [])
-            ->assertSessionHasErrors(['type', 'business_name', 'contact_name', 'locations_covered']);
+            ->assertSessionHasErrors(['types', 'business_name', 'contact_name', 'locations_covered']);
     });
 
     it('service listing accepts valid type values', function () {
         $user = User::factory()->create();
 
-        $validTypes = ['Photographer', 'Fitter', 'Feeder', 'Other'];
+        $validTypes = ['Clipping', 'Fitting', 'Photography', 'Transport', 'Veterinary', 'Feed Supplier', 'Show Preparation', 'Other'];
 
         foreach ($validTypes as $type) {
             $response = $this->actingAs($user)
                 ->post(route('services.store'), [
-                    'type' => $type,
+                    'types' => [$type],
                     'business_name' => "Test {$type} Business",
                     'contact_name' => 'John Smith',
                     'phone_contact' => '0412345678',
                     'locations_covered' => ['NSW'],
                 ]);
 
-            $response->assertSessionDoesntHaveErrors('type');
+            $response->assertSessionDoesntHaveErrors();
         }
     });
 
@@ -262,7 +266,7 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Fitter',
+                'types' => ['Fitting'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'phone_contact' => '0412345678',
@@ -276,7 +280,7 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Fitter',
+                'types' => ['Fitting'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'email_contact' => 'invalid-email',
@@ -290,7 +294,7 @@ describe('Service Listing Validation', function () {
 
         $this->actingAs($user)
             ->post(route('services.store'), [
-                'type' => 'Fitter',
+                'types' => ['Fitting'],
                 'business_name' => 'Test Business',
                 'contact_name' => 'John Smith',
                 'email_contact' => 'valid@example.com',

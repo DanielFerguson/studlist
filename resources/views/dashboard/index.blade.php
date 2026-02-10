@@ -398,7 +398,7 @@
                                     {{ $listing->business_name }}
                                 </a>
                             </td>
-                            <td>{{ $listing->type }}</td>
+                            <td>{{ is_array($listing->types ?? null) ? implode(', ', $listing->types) : ($listing->type ?? '') }}</td>
                             <td>{{ is_array($listing->locations_covered) ? implode(', ', $listing->locations_covered) :
                                 $listing->locations_covered }}</td>
                             <td>
@@ -553,7 +553,6 @@
         </div>
     </div>
 </x-layouts.app>
-
 
 
 

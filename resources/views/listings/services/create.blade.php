@@ -24,22 +24,40 @@
                 {{-- Business Information --}}
                 <x-form.section title="Business Information" description="Details about your business">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-form.select 
-                            name="type" 
-                            label="Service Type"
-                            :options="[
-                                'Clipping' => 'Clipping',
-                                'Fitting' => 'Fitting',
-                                'Photography' => 'Photography',
-                                'Transport' => 'Transport',
-                                'Veterinary' => 'Veterinary',
-                                'Feed Supplier' => 'Feed Supplier',
-                                'Show Preparation' => 'Show Preparation',
-                                'Other' => 'Other',
-                            ]"
-                            description="The type of service you provide."
-                            required
-                        />
+                        <div class="md:col-span-2">
+                            <label class="form-label">
+                                Service Types <span class="text-red-500">*</span>
+                            </label>
+
+                            @php
+                                $selectedTypes = old('types', []);
+                                $selectedTypes = is_array($selectedTypes) ? $selectedTypes : [$selectedTypes];
+                            @endphp
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                @foreach(\App\Enums\ServiceType::cases() as $serviceType)
+                                    <label class="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-white p-3">
+                                        <input
+                                            type="checkbox"
+                                            name="types[]"
+                                            value="{{ $serviceType->value }}"
+                                            class="form-checkbox"
+                                            {{ in_array($serviceType->value, $selectedTypes, true) ? 'checked' : '' }}
+                                        >
+                                        <span class="text-sm font-medium text-[var(--color-text)]">{{ $serviceType->value }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            <p class="form-description">Select all that apply.</p>
+
+                            @error('types')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                            @error('types.*')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <x-form.input 
                             name="abn" 
@@ -75,7 +93,7 @@
                                     type="text" 
                                     :name="'locations_covered[' + index + ']'"
                                     x-model="locations[index]"
-                                    placeholder="e.g., NSW, QLD, VIC"
+                                    placeholder="e.g., NSW"
                                     class="form-input flex-1"
                                 >
                                 <button 
@@ -100,7 +118,7 @@
                             </svg>
                             Add another location
                         </button>
-                        <p class="form-description">Enter the areas/states where you provide services.</p>
+                        <p class="form-description">Enter one Australian state per field (ACT, NSW, NT, QLD, SA, TAS, VIC, WA).</p>
                         @error('locations_covered')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
@@ -190,5 +208,3 @@
         </div>
     </div>
 </x-layouts.app>
-
-

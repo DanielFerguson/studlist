@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AustralianState;
+use App\Enums\ServiceType;
 use App\Filament\Resources\ServiceListingResource\Pages;
 use App\Models\ServiceListing;
 use Filament\Forms;
@@ -10,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ServiceListingResource extends Resource
 {
@@ -27,14 +29,10 @@ class ServiceListingResource extends Resource
                     ->relationship('user', 'name')
                     ->required()
                     ->searchable(),
-                Forms\Components\Select::make('type')
-                    ->options([
-                        'Photographer' => 'Photographer',
-                        'Fitter' => 'Fitter',
-                        'Feeder' => 'Feeder',
-                        'Other' => 'Other',
-                    ])
-                    ->required(),
+                Forms\Components\CheckboxList::make('types')
+                    ->options(ServiceType::toSelectOptions())
+                    ->required()
+                    ->columns(2),
                 Forms\Components\TextInput::make('abn')
                     ->maxLength(14),
                 Forms\Components\TextInput::make('business_name')
@@ -78,13 +76,10 @@ class ServiceListingResource extends Resource
                 Tables\Columns\TextColumn::make('business_name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('type')
-                    ->colors([
-                        'primary' => 'Photographer',
-                        'success' => 'Fitter',
-                        'warning' => 'Feeder',
-                        'gray' => 'Other',
-                    ]),
+                Tables\Columns\TextColumn::make('types')
+                    ->label('Types')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : ($state ?? '')),
                 Tables\Columns\TextColumn::make('contact_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('locations_covered')
@@ -101,12 +96,17 @@ class ServiceListingResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
-                    ->options([
-                        'Photographer' => 'Photographer',
-                        'Fitter' => 'Fitter',
-                        'Feeder' => 'Feeder',
-                        'Other' => 'Other',
-                    ]),
+                    ->label('Type')
+                    ->options(ServiceType::toSelectOptions())
+                    ->query(function (Builder $query, array $data): Builder {
+                        $value = $data['value'] ?? null;
+
+                        if (! is_string($value) || $value === '') {
+                            return $query;
+                        }
+
+                        return $query->whereJsonContains('types', $value);
+                    }),
                 Tables\Filters\SelectFilter::make('user')
                     ->relationship('user', 'name')
                     ->searchable(),

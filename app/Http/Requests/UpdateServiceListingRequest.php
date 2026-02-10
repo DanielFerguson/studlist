@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ServiceType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateServiceListingRequest extends FormRequest
 {
@@ -22,7 +24,8 @@ class UpdateServiceListingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|string|in:Photographer,Fitter,Feeder,Other',
+            'types' => 'required|array|min:1',
+            'types.*' => ['required', 'string', 'distinct', new Enum(ServiceType::class)],
             'abn' => 'nullable|string|max:14',
             'business_name' => 'required|string|min:2|max:255',
             'contact_name' => 'required|string|min:2|max:255',
@@ -44,7 +47,9 @@ class UpdateServiceListingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'type.in' => 'Please select a valid service type.',
+            'types.required' => 'Please select at least one service type.',
+            'types.min' => 'Please select at least one service type.',
+            'types.*.Illuminate\\Validation\\Rules\\Enum' => 'Please select a valid service type.',
             'locations_covered.required' => 'Please select at least one location you cover.',
             'locations_covered.min' => 'Please select at least one location you cover.',
             'locations_covered.*.in' => 'Please select valid Australian states.',
@@ -70,7 +75,5 @@ class UpdateServiceListingRequest extends FormRequest
         });
     }
 }
-
-
 
 

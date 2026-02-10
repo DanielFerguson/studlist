@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('service_listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['Photographer', 'Fitter', 'Feeder', 'Other']);
+            $table->string('type');
+            $table->json('types')->nullable(); // Multiple service types (e.g. fitting + photography)
             $table->string('abn')->nullable();
             $table->string('business_name');
             $table->string('contact_name');

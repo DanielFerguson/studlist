@@ -12,7 +12,7 @@ class ServiceListing extends Model
 
     protected $fillable = [
         'user_id',
-        'type',
+        'types',
         'abn',
         'business_name',
         'contact_name',
@@ -24,9 +24,22 @@ class ServiceListing extends Model
     ];
 
     protected $casts = [
+        'types' => 'array',
         'locations_covered' => 'array',
         'links' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        // Keep legacy `type` (single) in sync for backwards compatibility/indexing.
+        static::saving(function (self $serviceListing) {
+            $types = $serviceListing->types;
+
+            if (is_array($types) && count($types) > 0) {
+                $serviceListing->type = $types[0];
+            }
+        });
+    }
 
     /**
      * Get the user that owns the service listing.
@@ -36,7 +49,6 @@ class ServiceListing extends Model
         return $this->belongsTo(User::class);
     }
 }
-
 
 
 

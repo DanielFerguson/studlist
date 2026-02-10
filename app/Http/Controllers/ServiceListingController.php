@@ -46,13 +46,15 @@ class ServiceListingController extends Controller
         // Get validated data
         $validated = $request->validated();
 
+        $types = array_values(array_unique($validated['types']));
+
         // Filter out empty links
         $links = array_filter($validated['links'] ?? [], fn ($link) => ! empty($link));
 
         // Create the listing
         $service = ServiceListing::create([
             'user_id' => $request->user()->id,
-            'type' => $validated['type'],
+            'types' => $types,
             'abn' => $validated['abn'] ?? null,
             'business_name' => $validated['business_name'],
             'contact_name' => $validated['contact_name'],
@@ -106,12 +108,14 @@ class ServiceListingController extends Controller
         // Get validated data
         $validated = $request->validated();
 
+        $types = array_values(array_unique($validated['types']));
+
         // Filter out empty links
         $links = array_filter($validated['links'] ?? [], fn ($link) => ! empty($link));
 
         // Update the listing
         $service->update([
-            'type' => $validated['type'],
+            'types' => $types,
             'abn' => $validated['abn'] ?? null,
             'business_name' => $validated['business_name'],
             'contact_name' => $validated['contact_name'],

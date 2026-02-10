@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ServiceType;
 use App\Models\GeneticsListing;
 use App\Models\HayListing;
 use App\Models\ServiceListing;
@@ -375,8 +376,18 @@ class PublicPageController extends Controller
             if ($search) {
                 $servicesQuery->where(function ($q) use ($search) {
                     $q->where('business_name', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhere('type', 'like', "%{$search}%");
+                        ->orWhere('description', 'like', "%{$search}%");
+
+                    $matchedType = collect(ServiceType::cases())
+                        ->first(fn ($case) => strcasecmp($case->value, $search) === 0)
+                        ?->value;
+
+                    if ($matchedType) {
+                        $q->orWhereJsonContains('types', $matchedType);
+                    } else {
+                        // Fallback: `type` is the primary/legacy single-type column.
+                        $q->orWhere('type', 'like', "%{$search}%");
+                    }
                 });
             }
 

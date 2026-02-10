@@ -21,10 +21,11 @@ class ServiceListingFactory extends Factory
     public function definition(): array
     {
         $states = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
+        $types = ['Clipping', 'Fitting', 'Photography', 'Transport', 'Veterinary', 'Feed Supplier', 'Show Preparation', 'Other'];
 
         return [
             'user_id' => User::factory(),
-            'type' => fake()->randomElement(['Photographer', 'Fitter', 'Feeder', 'Other']),
+            'types' => fake()->randomElements($types, fake()->numberBetween(1, 2)),
             'abn' => fake()->numerify('## ### ### ###'),
             'business_name' => fake()->company(),
             'contact_name' => fake()->name(),
@@ -36,7 +37,5 @@ class ServiceListingFactory extends Factory
         ];
     }
 }
-
-
 
 

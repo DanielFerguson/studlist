@@ -18,14 +18,20 @@
                     <!-- Header Card -->
                     <div class="card-rustic p-8 mb-8">
                         <div class="flex items-start gap-6">
+                            @php
+                                $types = is_array($listing->types ?? null)
+                                    ? $listing->types
+                                    : (isset($listing->type) && $listing->type ? [$listing->type] : []);
+                            @endphp
+
                             <!-- Icon -->
                             <div class="w-20 h-20 rounded-2xl bg-teal-600 flex items-center justify-center flex-shrink-0">
-                                @if($listing->type === 'Photographer')
+                                @if(in_array('Photography', $types, true))
                                     <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
-                                @elseif($listing->type === 'Fitter & Feeder')
+                                @elseif(in_array('Fitting', $types, true))
                                     <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                     </svg>
@@ -37,9 +43,15 @@
                             </div>
 
                             <div class="flex-1">
-                                <span class="inline-block px-3 py-1 bg-teal-600/10 text-teal-700 text-sm font-medium rounded-full mb-3">
-                                    {{ $listing->type }}
-                                </span>
+                                @if(count($types) > 0)
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        @foreach($types as $type)
+                                            <span class="inline-block px-3 py-1 bg-teal-600/10 text-teal-700 text-sm font-medium rounded-full">
+                                                {{ $type }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                                 <h1 class="font-heading text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-2">
                                     {{ $listing->business_name }}
                                 </h1>
@@ -187,8 +199,6 @@
     </article>
     <x-listing-tracking :listing="$listing" listingType="service" />
 </x-layouts.public>
-
-
 
 
 
